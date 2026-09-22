@@ -64,12 +64,21 @@ export default function Experience() {
   useEffect(() => {
     if (openIdx === null) return
     const onKey = (e) => { if (e.key === 'Escape') close() }
-    const prev = document.body.style.overflow
+    /* html AND body. index.css sets `html, body { overflow-x: hidden }`, so the
+       root's overflow is not `visible` and the viewport stops taking its
+       overflow from <body>: document.scrollingElement is <html>, and locking
+       body alone leaves the page free to scroll behind the overlay. Measured
+       before this: open the dialog at scrollY 1500, scroll to 3000, close, and
+       the reader is 1500px away from the card they tapped. */
+    const prevBody = document.body.style.overflow
+    const prevHtml = document.documentElement.style.overflow
     document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
     document.addEventListener('keydown', onKey)
     dialogRef.current?.focus()
     return () => {
-      document.body.style.overflow = prev
+      document.body.style.overflow = prevBody
+      document.documentElement.style.overflow = prevHtml
       document.removeEventListener('keydown', onKey)
     }
   }, [openIdx])

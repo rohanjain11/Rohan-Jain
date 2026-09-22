@@ -1123,63 +1123,6 @@ a {
     order: 3;
   }
 
-  @keyframes slide-down {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-/* Dropdown */
-.dropdown {
-  position: relative;
-}
-
-.dropdown__panel {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 200px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px;
-  box-shadow: var(--shadow-lg);
-  display: none;
-  z-index: 1000;
-  backdrop-filter: blur(20px);
-}
-
-.dropdown__panel.open {
-  display: block;
-  animation: fade-in-up 0.3s ease;
-}
-
-.dropdown__item {
-  display: block;
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  font-size: 0.9375rem;
-  transition: var(--transition-fast);
-}
-
-.dropdown__item:hover {
-  background: var(--bg-glass);
-  color: var(--text-primary);
-}
-
-/* Animations */
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1667,14 +1610,6 @@ a {
     transition-duration: 0.01ms !important;
   }
   
-  .experience-card__item {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  
-  .experience-card__bullet::after {
-    animation: none;
-  }
 }
 
 /* Mobile-specific improvements */
@@ -1917,16 +1852,16 @@ html, body {
     display: none;
   }
 
-  /* Touch targets. */
-  .nav__link,
+  /* Touch targets. .nav__link is deliberately NOT in here: this block is later
+     in the file than the menu panel rules and matches at the same specificity,
+     so it was overriding the panel's 52px rows and 22px gutter with 44px and
+     12px. That left the menu labels starting at x=15 under a brand at x=22. The
+     panel row already clears 44px on its own. */
   .btn,
   .hero__social-link {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
-  }
-  .nav__link {
-    padding: 10px 12px;
   }
 
   /* Long URLs and code-ish strings must not push the page sideways. */
@@ -1959,15 +1894,11 @@ html, body {
     padding-bottom: 0.625rem;
   }
 
+  /* Font size only. This block used to restore flex: 1 1 auto, min-width: 0 and
+     an ellipsis, which is exactly the shrinking the global .brand rule exists to
+     prevent, and it is what let the name truncate to "Rohan ...". */
   .brand {
-    flex: 1 1 auto;
-    min-width: 0;
     font-size: 1rem;
-  }
-  .brand > span:last-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .brand__mark {
     width: 32px;
@@ -2019,8 +1950,11 @@ html, body {
   }
 }
 
-@media (max-width: 380px) {
-  /* Smallest phones: the wordmark is the first thing worth dropping. */
+@media (max-width: 339px) {
+  /* Last resort only. This used to fire at 380px, which hid "Rohan Jain" on an
+     iPhone SE, 13 mini and most 360px Androids and left the header as a bare RJ
+     tile. Measured at 375: the name renders 86px wide, untruncated, with 23px
+     of slack before .nav__actions. It genuinely stops fitting around 320. */
   .brand > span:last-child {
     display: none;
   }
@@ -2327,7 +2261,11 @@ html, body {
   width: max-content;
   animation: ribbonRun 60s linear infinite;
 }
-.ribbon:hover .ribbon__track { animation-play-state: paused; }
+@media (hover: hover) and (pointer: fine) {
+  /* Pointer devices only. A touch browser synthesises a lingering :hover on the
+     last element tapped, so on a phone this could stop the marquee for good. */
+  .ribbon:hover .ribbon__track { animation-play-state: paused; }
+}
 /* margin-right, NOT gap on the track. `gap` puts 23 gaps between 24 items, so
    one copy plus its trailing gap is wider than half the track and the -50%
    loop snapped back by gap/2 (measured: 13px) on every cycle. A trailing
