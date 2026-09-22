@@ -74,6 +74,8 @@ export const EXPERIENCE = [
   {
     org: "Bright Machines",
     title: "AI Engineering Intern",
+    url: "https://www.brightmachines.com/",
+    summary: "Building the production on-prem AI platform behind Bright Machines' manufacturing software: an LLM chat agent, the MCP tool servers it calls, a knowledge pipeline, and the Kubernetes and Azure deployment around them.",
     dates: "Jun 2026 to Present",
     location: "San Francisco, CA",
     tags: ["LangGraph", "MCP", "LiteLLM", "Ollama", "FastAPI", "React/TypeScript", "Postgres", "Temporal", "Kubernetes", "Azure AKS", "ArgoCD", "Databricks", "Langfuse"],
@@ -102,6 +104,8 @@ export const EXPERIENCE = [
   {
     org: "Nexus Weather & Climate",
     title: "Data Science & Engineering Intern",
+    url: "https://www.nexusweatherandclimate.com/",
+    summary: "ML post-processing for numerical weather prediction: replacing baseline models, calibrating probabilistic forecasts, and gating what reaches production.",
     dates: "May 2025 to May 2026",
     location: "Boulder, CO (remote-first)",
     tags: ["Python", "pandas", "NumPy", "scikit-learn", "XGBoost", "CRPS", "MAE", "MSE"],
@@ -117,6 +121,8 @@ export const EXPERIENCE = [
   {
     org: "Kopf Lab, University of Colorado Boulder",
     title: "Software Developer",
+    url: "https://www.kopflab.org/",
+    summary: "Isoverse v2, an open-source toolkit for reproducible stable isotope data: deterministic readers for proprietary instrument formats, and the multi-user platform that serves them.",
     dates: "Dec 2025 to May 2026",
     location: "Boulder, CO",
     tags: ["R", "Parsing", "Validation", "Reproducibility", "Testing", "Keycloak", "ShinyProxy", "AWS EC2"],
