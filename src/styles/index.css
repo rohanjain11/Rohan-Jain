@@ -1123,11 +1123,6 @@ a {
   .nav__actions {
     order: 3;
   }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .reveal {
@@ -1297,6 +1292,25 @@ a {
   opacity: 1;
   transform: translateY(0) perspective(1000px) rotateX(0deg);
   animation: experienceCardSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* The hero entrance. This was destroyed as collateral when @keyframes
+   slide-down was deleted: the cut took this rule's header and its `from` stop,
+   leaving an orphaned `to` block whose closing brace happened to be what
+   terminated the surrounding media query, so the braces still balanced and
+   nothing failed loudly. .hero__title, .hero__subtitle, .hero__nav-grid and
+   .hero__social all name it. */
+@keyframes fade-in-up {
+  /* TRANSFORM ONLY, like expandSettle, chipSettle and the experience reveal.
+     Three of the four rules that use this run it with a delay and fill-mode
+     `both`, which pins the element on the `from` frame for the whole delay. A
+     `from { opacity: 0 }` therefore meant that if the timeline never started,
+     which is what a backgrounded tab or a throttled frame loop does, the hero
+     subtitle, the social row and .hero__nav-grid all stayed invisible. That
+     grid is the home page's main navigation. Movement may fail; opacity may
+     not. The slide survives, the fade does not. */
+  from { transform: translateY(30px); }
+  to   { transform: none; }
 }
 
 @keyframes experienceCardSlideIn {
@@ -1936,9 +1950,12 @@ html, body {
     padding: 9px 14px;
     font-size: 0.8125rem;
   }
+  /* 44, not 40. This selector is more specific than the .btn touch-target rule,
+     so it was quietly holding the theme toggle below the minimum while every
+     other control met it. */
   .nav__actions .btn--ghost {
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 44px;
+    min-height: 44px;
     padding: 8px;
   }
 
@@ -1951,11 +1968,14 @@ html, body {
   }
 }
 
-@media (max-width: 339px) {
+@media (max-width: 354px) {
   /* Last resort only. This used to fire at 380px, which hid "Rohan Jain" on an
      iPhone SE, 13 mini and most 360px Androids and left the header as a bare RJ
      tile. Measured at 375: the name renders 86px wide, untruncated, with 23px
-     of slack before .nav__actions. It genuinely stops fitting around 320. */
+     of slack before .nav__actions. The cutoff is 354, not 339: measured
+     innerWidth minus the burger's right edge, the gutter is 1.4px at 340 and
+     5.4px at 344, and only reaches the 16px floor this design assumes at 355.
+     Below that the wordmark goes rather than have the burger touch the bezel. */
   .brand > span:last-child {
     display: none;
   }

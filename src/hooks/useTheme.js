@@ -31,10 +31,14 @@ export function useTheme() {
        Harmless (no motion is the safe direction, not hidden content) but a
        timer clears it regardless. */
     const t = setTimeout(drop, 120)
+    /* No drop() here. React runs the previous cleanup BEFORE the next effect
+       body, so calling it removed the class toggleTheme had just added and the
+       new run bailed at the guard above: suppression fired on every other flip
+       and the ones in between still flashed. The rAF pair and the timer already
+       cover unmount. */
     return () => {
       cancelAnimationFrame(id)
       clearTimeout(t)
-      drop()
     }
   }, [theme])
 
