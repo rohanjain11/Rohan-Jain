@@ -2432,3 +2432,16 @@ html, body {
     transform: none;
   }
 }
+
+
+/* A ghost button's edge only appears on hover, and a phone has no hover. Give
+   it a real border wherever hovering is not available, so a stack of them reads
+   as separate controls. */
+@media (hover: none) {
+  .card .btn--ghost {
+    border-color: var(--border);
+  }
+}
+
+/* The canvas now carries .particle-bg, so these two selectors that never
+   matched anything are gone: .particle-background and canvas.particles. */

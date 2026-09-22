@@ -89,7 +89,12 @@ export default function Projects() {
                 </div>
 
                 {project.links && project.links.length > 0 && (
-                  <div style={{ marginTop: '20px' }}>
+                  /* On a phone `.card .btn { width: 100% }` makes both links
+                     full-width blocks, and this wrapper had no flex and no gap,
+                     so GitHub and Live stacked with 0px between them. Both are
+                     ghost buttons with a transparent border, so it read as one
+                     block of text with no seam. */
+                  <div style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                     {project.links.map((link, linkIdx) => (
                       <a
                         key={linkIdx}
