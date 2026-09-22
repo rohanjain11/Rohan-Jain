@@ -1,6 +1,6 @@
 export const SITE = {
   name: "Rohan Jain",
-  location: "Vista, CA",
+  location: "San Francisco, CA",
   emailPrimary: "jainrohanj@gmail.com",
   phone: "+1 720-819-0419",
   links: {
@@ -8,16 +8,18 @@ export const SITE = {
     linkedin: "https://www.linkedin.com/in/rohan-jain11",
   },
   roleTargets: [
-    "Data Scientist",
-    "Data Engineer",
-    "Data Analyst",
+    "AI Engineer",
+    "ML Engineer",
+    "Software Engineer",
   ],
-  valueProp: "Builds reproducible forecasting and data quality workflows with measurable evaluation.",
+  valueProp: "Builds LLM agent systems that hold up in production: evaluation harnesses, fail-closed guardrails, incident root cause.",
   ctas: {
-    resumeMaster: { label: "Resume (Master)", href: `${import.meta.env.BASE_URL}assets/docs/resume-master.pdf`.replace(/\/+/g, '/') },
+    resumeMaster: { label: "Resume (General)", href: `${import.meta.env.BASE_URL}assets/docs/resume-master.pdf`.replace(/\/+/g, '/') },
+    resumeAI: { label: "Resume (AI Engineer)", href: `${import.meta.env.BASE_URL}assets/docs/resume-ai.pdf`.replace(/\/+/g, '/') },
+    resumeML: { label: "Resume (ML Engineer)", href: `${import.meta.env.BASE_URL}assets/docs/resume-ml.pdf`.replace(/\/+/g, '/') },
+    resumeSWE: { label: "Resume (Software Engineer)", href: `${import.meta.env.BASE_URL}assets/docs/resume-swe.pdf`.replace(/\/+/g, '/') },
     resumeDE: { label: "Resume (Data Engineer)", href: `${import.meta.env.BASE_URL}assets/docs/resume-de.pdf`.replace(/\/+/g, '/') },
     resumeDA: { label: "Resume (Data Analyst)", href: `${import.meta.env.BASE_URL}assets/docs/resume-da.pdf`.replace(/\/+/g, '/') },
-    resumeML: { label: "Resume (ML)", href: `${import.meta.env.BASE_URL}assets/docs/resume-ml.pdf`.replace(/\/+/g, '/') },
   },
 };
 
@@ -41,64 +43,158 @@ export const EDUCATION = [
 ];
 
 export const SKILLS = {
-  "Languages": ["Python", "R", "SQL (MySQL, PostgreSQL)", "MongoDB", "JavaScript", "HTML", "CSS", "Go", "PHP"],
-  "Data and ML": [
-    "pandas", "NumPy", "scikit-learn",
-    "Random Forest", "SVR", "GBRT", "XGBoost", "MLP",
-    "Train-test splits", "Model selection", "Hyperparameter tuning",
-    "Error analysis", "Baseline comparisons",
-    "Evaluation: MAE, MSE, CRPS",
+  "LLM and Agents": [
+    "LangGraph (ReAct, multi-agent)", "LangChain", "Model Context Protocol (MCP)", "LLM tool-calling agents",
+    "RAG (BM25, embeddings, hybrid)", "LiteLLM multi-provider gateway", "OpenAI-compatible APIs",
+    "OpenAI / Anthropic / Gemini APIs", "Ollama", "Pydantic v2 structured outputs",
+    "LLM evaluation harnesses", "prompt-injection testing", "guardrails", "Langfuse tracing",
+    "QLoRA / LoRA fine-tuning (PEFT)", "Pinecone", "ChromaDB", "FAISS",
+    "agentic coding tools (Claude Code, Cursor)",
   ],
-  "Deep Learning": ["TensorFlow", "PyTorch", "Keras", "Sequence models", "Custom loss experimentation"],
-  "Data Quality and Reproducibility": [
-    "Schema, unit, and range validation gates",
-    "Reproducible run artifacts, plots, and documentation",
-    "Logging and reviewable outputs",
+  "Languages": ["Python", "TypeScript", "R", "SQL (PostgreSQL, MySQL)", "Bash", "JavaScript"],
+  "Backend and Data": [
+    "FastAPI", "REST APIs", "Server-Sent Events (SSE)", "PostgreSQL + Alembic", "SQLite / sqlite-vec", "PostGIS", "MongoDB",
+    "Databricks (Unity Catalog, Unity AI Gateway, Model Serving, Genie, AI Functions)", "Iceberg / Parquet CDC via Debezium",
+    "Temporal", "Docker", "Kubernetes / Kustomize", "Kubernetes HPA", "ArgoCD", "GitLab CI/CD", "GitHub Actions", "pytest",
+  ],
+  "Machine Learning": [
+    "scikit-learn", "XGBoost", "LightGBM", "Random Forest", "GBRT", "SVR", "MLP",
+    "TensorFlow", "Keras", "PyTorch", "CNN-LSTM", "custom loss functions (CRPS)",
+    "MLflow", "hyperparameter tuning", "cross-validation", "controlled ablations", "mutation testing",
+  ],
+  "Frontend, Cloud and Observability": [
+    "React", "Next.js", "Vite", "Tailwind CSS",
+    "Azure (AKS, ACR, Entra ID, Blob)", "AWS (Lambda, S3, EC2, API Gateway, RDS, Secrets Manager)",
+    "OIDC auth (oauth2-proxy, Keycloak)", "Grafana", "Loki", "Prometheus", "Locust load testing",
   ],
   "Visualization and BI": ["Tableau", "Power BI", "Excel", "Matplotlib", "Plotly", "Seaborn"],
-  "Engineering and Cloud": ["FastAPI", "REST APIs", "Git/GitHub", "Docker (basics)", "Apache Spark", "AWS (Lambda, S3)", "Azure", "LangChain", "FAISS"],
 };
 
 export const EXPERIENCE = [
   {
+    org: "Bright Machines",
+    title: "AI Engineering Intern",
+    dates: "Jun 2026 to Present",
+    location: "San Francisco, CA",
+    tags: ["LangGraph", "MCP", "LiteLLM", "FastAPI", "React/TypeScript", "Postgres", "Kubernetes", "Azure AKS", "Databricks"],
+    icon: "chip",
+    bullets: [
+      "Owned tool selection for an on-prem LLM agent (LangGraph ReAct over LiteLLM): 132 MCP tool schemas exceeded the 32K-token window; built a 115-question evaluation harness that raised tool recall from 0.47 to 0.97.",
+      "Designed and shipped a read-only-by-construction MCP server from scratch (37 files, +3,163 lines, 12 tools) serving a 32,000-workflow Temporal namespace in production; Docker-packaged, deployed via Kubernetes/Kustomize.",
+      "Hardened four MCP servers: closed a Critical path-traversal vulnerability (CWE-22) with 9 regression tests, enforced least-privilege RBAC, replaced a fail-open deny-list with a fail-closed allow-list, and proved via adversarial prompt injection that the agent cannot execute database writes.",
+      "Root-caused a 74-minute silent chat outage (agent registry not rehydrating after a gateway restart while health probes stayed green), disproved the planned upgrade fix by inspecting the running container, and shipped Postgres persistence plus a self-healing watchdog (135 tests), verified live in production.",
+      "Built a grounded document Q&A platform end to end (FastAPI, React/TypeScript, sqlite-vec retrieval, cited answers, OIDC identity seam behind oauth2-proxy), deployed to Azure AKS via ArgoCD with 350+ tests; cut LLM citation fabrication from 31% to 0%.",
+      "Built the Confluence knowledge pipeline to run fully on-prem (CQL fetch in code, Qwen on an H100, no data egress) instead of per-page cloud LLM calls estimated at $6/page, avoiding an estimated $12K+ of API spend across a 2,000+ page estate.",
+    ],
+  },
+  {
     org: "Nexus Weather & Climate",
     title: "Data Science & Engineering Intern",
-    dates: "May 2025 to Present",
+    dates: "May 2025 to May 2026",
     location: "Boulder, CO (remote-first)",
     tags: ["Python", "pandas", "NumPy", "scikit-learn", "XGBoost", "CRPS", "MAE", "MSE"],
     icon: "cloud",
     bullets: [
-      "Replaced a legacy SVM bias-correction step with a tuned Random Forest and validated results for rollout notes; reduced temperature MAE from 0.73 to 0.39 (47%) and humidity MAE from 4.68 to 2.37 (49%).",
+      "Replaced a legacy SVM bias-correction step with a tuned Random Forest and validated results for rollout notes; reduced temperature MAE from 0.73 to 0.39 (47%) and humidity MAE from 4.68 to 2.37 (54%).",
       "Built a probabilistic CNN-LSTM with a custom CRPS loss and packaged verification plots plus short decision notes; best reported CRPS was 0.1787 for ensemble calibration.",
       "Created a reproducible training and benchmarking workflow with schema, unit, and range checks; compared SVR, RF, tuned RF, GBRT, XGBoost, and MLP under consistent evaluation and artifacts.",
-      "Implemented an inference quality gate that only accepts a model when post-ML MAE beats the pre-ML baseline; reduced failed runs by 90% by automatically rejecting regressions.",
+      "Implemented an inference quality gate that only accepts a model when post-ML MAE beats the pre-ML baseline; reduced failed runs by 90% and saved about 20 engineer-hours a month.",
       "Ran controlled loss-function experiments (CRPS vs hybrid CRPS+MSE with alpha 0.80 vs Huberized CRPS) and logged runtime plus delta CRPS outcomes for practical tradeoff notes.",
     ],
   },
   {
     org: "Kopf Lab, University of Colorado Boulder",
-    title: "Graduate Research Assistant",
-    dates: "Dec 2025 to Present",
+    title: "Software Developer",
+    dates: "Dec 2025 to May 2026",
     location: "Boulder, CO",
-    tags: ["R", "Parsing", "Validation", "Reproducibility", "Testing", "Keycloak", "ShinyProxy"],
+    tags: ["R", "Parsing", "Validation", "Reproducibility", "Testing", "Keycloak", "ShinyProxy", "AWS EC2"],
     icon: "beaker",
     bullets: [
+      "Decoded legacy Thermo Isodat scan (.scn) files stored via MFC CArchive Serialize patterns by decompiling DLLs and mapping class layouts and field order, then implemented deterministic R readers that follow the same read sequence.",
+      "Added fail-fast validation for corruption and edge cases using type, bounds, and structural checks (missing blocks, wrong ordering, truncation) to prevent silent data integrity issues; regression tests with golden outputs and corruption fixtures.",
+      "Migrated lab infrastructure to ShinyProxy Operator on AWS EC2 with Keycloak OIDC, group-based access control, per-user container isolation, and Grafana/Loki/Prometheus observability; secrets injected from AWS Secrets Manager at deploy time.",
       "Standardized parsing outputs across vendor formats with consistent field names, units, and schemas so the same file yields the same structure across platforms and package versions.",
-      "Added fail-fast validation for corruption and edge cases using type, bounds, and structural checks (missing blocks, wrong ordering, truncation) to prevent silent data integrity issues.",
-      "Decoded legacy Thermo Isodat scan (.scn) files stored via MFC CArchive Serialize patterns by mapping class layouts and field order, then implemented R readers that follow the same read sequence.",
-      "Improved auditability by attaching file IDs, format signals, parsing paths, and assumptions to outputs, plus regression tests with golden outputs and corruption fixtures.",
-      "Supported secure multi-user access planning by separating authentication from app execution using Keycloak OIDC and ShinyProxy session isolation (one container per user).",
     ],
   },
 ];
 
 export const PROJECTS = [
   {
+    name: "ResearchAgent (Multi-Agent Research Assistant)",
+    dates: "Jun 2026",
+    stack: ["Python", "LangChain", "FastAPI", "SSE", "ChromaDB", "React", "Tailwind"],
+    problem: "Turn a research topic into a sourced, critiqued report without a human babysitting each step.",
+    built: "Four sequential agents (Researcher, Summarizer, Critic, Reporter) on LangChain and gpt-4o-mini behind a FastAPI backend that streams per-agent progress to a React UI over Server-Sent Events; every LLM and tool call is logged as structured JSON.",
+    impact: "Live demo with search retries, relevance filtering, and a pipeline that fails deliberately when sources are insufficient; about $0.01 to $0.05 per query.",
+    links: [{ label: "GitHub", href: "https://github.com/rohanjain11/agent-research-assistant" }, { label: "Live", href: "https://rohanjain11.github.io/agent-research-assistant/" }],
+    icon: "document",
+  },
+  {
+    name: "RoboDocs (Robotics Manual RAG)",
+    dates: "Jun 2026",
+    stack: ["Python", "FastAPI", "OpenAI embeddings", "Pinecone", "React", "Tailwind"],
+    problem: "Answer questions from robotics manuals with citations a technician can check.",
+    built: "About 10 Universal Robots manuals (~3,870 chunks) indexed in Pinecone serverless; answers carry document and page citations, section-type filters, and safety callouts, with an explicit fallback when the manuals lack an answer.",
+    impact: "Ingest under $0.50 per 10 PDFs and under $0.01 per query on free tiers.",
+    links: [{ label: "GitHub", href: "https://github.com/rohanjain11/robotics-manual-rag" }, { label: "Live", href: "https://rohanjain11.github.io/robotics-manual-rag/" }],
+    icon: "document",
+  },
+  {
+    name: "Flan-T5 QLoRA Fine-Tune",
+    dates: "Jun 2026",
+    stack: ["PyTorch", "Hugging Face", "PEFT / QLoRA", "Colab T4", "ROUGE"],
+    problem: "Show a measured fine-tuning delta on a small budget, and publish the adapter.",
+    built: "QLoRA (8-bit, LoRA rank 16 on attention) on flan-t5-base over a 360-example synthetic QA set generated with gpt-4o-mini; diagnosed an fp16 failure (zero training loss, NaN validation) and trained the adapters in fp32.",
+    impact: "ROUGE-L 0.1637 to 0.2058 (+25.7%) in 2.2 minutes on a free T4; adapter published to Hugging Face Hub.",
+    links: [{ label: "GitHub", href: "https://github.com/rohanjain11/llm-finetune-qlora" }, { label: "Hugging Face", href: "https://huggingface.co/rohanjain11/flan-t5-mlds-qlora" }],
+    icon: "beaker",
+  },
+  {
+    name: "PyTorch Model Serving on Kubernetes",
+    dates: "Jun 2026",
+    stack: ["PyTorch", "FastAPI", "Docker", "Kubernetes", "HPA", "Locust", "Prometheus", "Grafana"],
+    problem: "Serve two PyTorch models with canary routing and prove autoscaling under load.",
+    built: "ResNet18 (92.78%) and a BiLSTM (88.62%) served with FastAPI on Minikube; two deployments with canary routing by model version; a Horizontal Pod Autoscaler at 2 to 6 replicas on 50% CPU; Prometheus metrics and a Grafana dashboard for request rate, p50/p95 latency and traffic split.",
+    impact: "A 30-user Locust test scaled pods 2 to 6 in 3 to 4 minutes and back in 5 to 6; documented the port-forward saturation that made 75 users fail.",
+    links: [{ label: "GitHub", href: "https://github.com/rohanjain11/pytorch-k8s-serving" }],
+    icon: "beaker",
+  },
+  {
+    name: "ClaimPilot AI (Guardrailed Tool-Calling Agent)",
+    dates: "Jan 2026",
+    stack: ["Python", "Pydantic v2", "OpenAI function calling", "Streamlit", "pytest"],
+    problem: "Validate healthcare claims with an LLM that cannot invent problems.",
+    built: "Deterministic Pydantic v2 checks surface claim issues; OpenAI function calling proposes structured fixes only for issues the checks found; strict output schemas with retry and fallback guarantee a valid report even when the model fails.",
+    impact: "Batch evaluation reports validity, severity distribution and retry rates; full pytest suite.",
+    links: [{ label: "GitHub", href: "https://github.com/rohanjain11/claimpilot-ai" }],
+    icon: "document",
+  },
+  {
+    name: "AgentSquared (No-Code AI Agent Builder)",
+    dates: "Mar 2026",
+    stack: ["FastAPI", "SQLAlchemy", "Next.js", "Tailwind", "Gemini API", "Bluesky AT Protocol"],
+    problem: "Let a non-developer stand up a working business agent in under a minute.",
+    built: "HackCU 12 build where every agent is a database row plus JSON config; Gemini-powered RAG over uploaded knowledge bases and a Bluesky monitor that classifies brand mentions and drafts replies for one-click human approval.",
+    impact: "New agent type is a new prompt template, not new code.",
+    links: [{ label: "GitHub", href: "https://github.com/rohanjain11/AgentSquared" }],
+    icon: "document",
+  },
+  {
+    name: "MLflow Weather Benchmark",
+    dates: "Jun 2026",
+    stack: ["Python", "scikit-learn", "XGBoost", "MLflow", "GitHub Actions", "Open-Meteo API"],
+    problem: "Make a bias-correction benchmark reproducible and gated.",
+    built: "Five regression models trained per target on live Open-Meteo data with every run logged to MLflow; an automated quality gate rejects any model that fails to beat a mean-prediction baseline; CI runs a live-data smoke test on every push.",
+    impact: "Best models improved MAE 84.8% (temperature) and 79.8% (humidity) over baseline; 10 of 10 models passed the gate.",
+    links: [{ label: "GitHub", href: "https://github.com/rohanjain11/mlflow-weather-benchmark" }],
+    icon: "beaker",
+  },
+  {
     name: "SaferRide (Risk-Aware Bicycle Routing)",
     dates: "Sep 2025 to Dec 2025",
-    stack: ["Python", "FastAPI", "SQL", "PostgreSQL", "PostGIS", "GeoPandas", "OSRM"],
+    stack: ["Python", "FastAPI", "PostgreSQL", "PostGIS", "GeoPandas", "OSRM", "AWS Lambda"],
     problem: "Help riders compare route time versus safety using crash and hazard signals.",
-    built: "A routing service that requests OSRM routes, returns alternatives, and assigns route-level risk scores computed with spatial joins and proximity features.",
+    built: "A routing service that requests OSRM routes, returns alternatives, and assigns route-level risk scores computed with spatial joins and proximity features; deployed serverlessly on AWS Lambda with RDS.",
     impact: "Served routes and risk metrics via FastAPI with map overlays so riders can compare safety versus time tradeoffs.",
     links: [{ label: "GitHub", href: "https://github.com/Simrann020/Saferide" }],
     icon: "bicycle",
@@ -125,7 +221,7 @@ export const PROJECTS = [
   },
   {
     name: "Isoverse Readers for Legacy Instrument Files",
-    dates: "Dec 2025 to Present",
+    dates: "Dec 2025 to May 2026",
     stack: ["R", "Testing", "Validation"],
     problem: "Make legacy stable isotope instrument files readable and reliable for analysis.",
     built: "Deterministic parsing and validation for Thermo Isodat scan (.scn) files by mirroring serialized write order and returning analysis-ready outputs with provenance.",
@@ -136,18 +232,12 @@ export const PROJECTS = [
 ];
 
 export const CERTIFICATIONS = [
-  {
-    name: "Neural Networks and Deep Learning",
-    issuer: "Coursera",
-  },
-  {
-    name: "Machine Learning Specialization",
-    issuer: "Coursera",
-  },
+  { name: "Neural Networks and Deep Learning", issuer: "Coursera" },
+  { name: "Machine Learning Specialization", issuer: "Coursera" },
 ];
 
 export const PUBLICATION = {
   title: "Yoga Posture Detection and Correction",
-  note: "Technical paper published in Journal of Operating Systems Development & Trends (2024).",
+  note: "Technical paper published in Journal of Operating Systems Development & Trends (2024). 96.5% posture classification accuracy.",
   link: "https://journals.stmjournals.com/joosdt/article=2024/view=161704/",
 };

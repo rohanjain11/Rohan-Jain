@@ -29,7 +29,7 @@ export default function Contact() {
   ]
 
   const quickLinks = [
-    { label: 'Resume (Master)', href: SITE.ctas.resumeMaster.href },
+    ...Object.values(SITE.ctas).map((c) => ({ label: c.label, href: c.href })),
     { label: 'Experience', to: '/experience' },
     { label: 'Projects', to: '/projects' },
     { label: 'Skills', to: '/skills' },
@@ -43,8 +43,8 @@ export default function Contact() {
         <div className="container">
           <h1 className="page-title">Get In Touch</h1>
           <p className="page-subtitle">
-            I'm always interested in discussing data science projects, collaboration opportunities, 
-            or new roles. Let's connect!
+            I'm always interested in discussing AI and ML engineering work, collaboration 
+            opportunities, or new roles. Let's connect!
           </p>
         </div>
       </header>

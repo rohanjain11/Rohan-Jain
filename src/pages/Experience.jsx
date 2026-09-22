@@ -24,6 +24,13 @@ export default function Experience() {
             {EXPERIENCE.map((exp, idx) => (
               <div key={idx} className="experience-card reveal" ref={reveals[idx]}>
                 <div className="experience-card-icon-bg" aria-hidden="true">
+                  {exp.icon === 'chip' && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="6" y="6" width="12" height="12" rx="2"/>
+                      <rect x="9.5" y="9.5" width="5" height="5" rx="1"/>
+                      <path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>
+                    </svg>
+                  )}
                   {exp.icon === 'cloud' && (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z"/>
