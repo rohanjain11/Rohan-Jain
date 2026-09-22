@@ -6,6 +6,19 @@ import Footer from './Footer'
 export default function Layout({ children }) {
   const location = useLocation()
 
+  /* React Router keeps the document scroll position across a pushState
+     navigation and nothing here reset it. Scroll /experience down, tap Contact,
+     and you land on /contact already scrolled past its own title. On desktop
+     the persistent nav disguises it; on a phone the whole screen is content and
+     it reads as a page that failed to load.
+     Skipped when a hash is present so the Skills #cat-* jump still wins.
+     'instant' because html { scroll-behavior: smooth } would otherwise animate
+     the old page's scroll distance while the new route paints. */
+  useEffect(() => {
+    if (location.hash) return
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [location.pathname, location.hash])
+
   useEffect(() => {
     const handleMouseMove = (e) => {
       const card = e.target.closest('.card, .hero__nav-card, .experience-card')

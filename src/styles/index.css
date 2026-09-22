@@ -223,7 +223,7 @@ a {
   position: relative;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .nav__inner {
     padding-top: 1rem;
     padding-bottom: 1rem;
@@ -239,6 +239,15 @@ a {
   font-weight: 700;
   color: var(--text-primary);
   transition: var(--transition-fast);
+  /* The wordmark must never wrap. Between about 900 and 1150px the nav links
+     squeeze the brand until "Rohan Jain" broke onto a second line, which made
+     the whole bar two rows tall and pushed it over the page title below.
+     nowrap was previously set only under 768px; it belongs at every width. */
+  white-space: nowrap;
+  /* Do not shrink. With flex: 0 1 auto the brand was the item that gave up
+     space when the links got tight, so the name truncated to "Rohan ...".
+     The links carry the squeeze instead, see the tablet tier below. */
+  flex: 0 0 auto;
 }
 
 .brand:hover {
@@ -288,6 +297,23 @@ a {
   display: flex;
   gap: 4px;
   align-items: center;
+}
+
+/* Between the phone menu breakpoint and a comfortable desktop the six links
+   plus the brand plus the actions total about 1006px inside a 1017px iPad.
+   Trimming the link padding buys roughly 100px, which is the difference
+   between everything fitting and the brand truncating. */
+@media (min-width: 1025px) and (max-width: 1150px) {
+  .nav__link {
+    padding: 10px 11px;
+    font-size: 0.875rem;
+  }
+  .nav__inner {
+    gap: 10px;
+  }
+  .nav__actions .btn--primary {
+    padding: 10px 16px;
+  }
 }
 
 .nav__link {
@@ -996,7 +1022,12 @@ a {
   border-color: var(--border-bright);
 }
 
-@media (max-width: 768px) {
+/* Burger up to 1024px, not 768px. Six links plus the brand plus the Resume
+   button measure about 940px, so between 769 and roughly 990 they did not fit
+   and something had to give: the brand was shrinking, which is why the name
+   truncated and then wrapped to two rows. Nothing needs to give if the links
+   are behind the menu at those widths. */
+@media (max-width: 1024px) {
   .nav__toggle {
     display: block;
     order: 2;
@@ -1920,7 +1951,7 @@ html, body {
    making it 140px tall - taller than the page-hero's top padding, so the page
    title rendered underneath it and was invisible. Keep it to one row and give
    the hero enough clearance for the row that actually results. */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .nav__inner {
     flex-wrap: nowrap;
     gap: 8px;
@@ -2359,4 +2390,45 @@ html, body {
   }
   .ribbon__track { animation: none; }
   .wall-jump__link:hover { transform: none; }
+}
+
+
+/* --- Experience: the reveal must be transform-only -------------------------
+   Reproduced with the tab backgrounded (visibilityState "hidden", which is what
+   a phone does when you lock the screen or switch apps while the page loads):
+   experienceCardSlideIn sits at currentTime 0 with a 0% keyframe of opacity 0,
+   and every bullet's opacity transition sits at currentTime 0 from a base of
+   opacity 0. Three blank rectangles and every bullet invisible, on a page whose
+   reveal had already fired: the cards carried `reveal visible` the whole time.
+   useReveal's 1.5s backstop clears a TRANSITION on the card; it cannot cancel an
+   animation, and it never touches the bullets at all.
+
+   This is the third time this file has shipped this bug. Same rule as
+   expandSettle and chipSettle: movement may fail, opacity may not. Opacity is
+   no longer animated here, only transform. */
+.experience-card.reveal,
+.experience-card.reveal.visible {
+  opacity: 1;
+  animation: none;
+}
+.experience-card.reveal {
+  transition: transform 0.6s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.experience-card__bullet-item {
+  opacity: 1;
+  /* 4px down, not translateX(-20px): a stalled transform has to be invisible,
+     and a stalled -20px pushed the text and its bullet dot out past the card
+     padding. */
+  transform: translateY(4px);
+  transition: transform 0.45s ease;
+}
+.experience-card.reveal.visible .experience-card__bullet-item {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .experience-card.reveal,
+  .experience-card__bullet-item {
+    transition: none;
+    transform: none;
+  }
 }
