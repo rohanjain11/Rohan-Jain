@@ -2038,11 +2038,6 @@ html, body {
     align-items: stretch;   /* both cards in a row share the taller one's height */
     gap: var(--gap-lg);
   }
-  /* An expanded role gets the full width; 18 bullets in a half column is a
-     column of ragged two-word lines. */
-  .experience-card[data-open="true"] {
-    grid-column: 1 / -1;
-  }
 }
 
 .experience-card__summary {
@@ -2088,27 +2083,9 @@ html, body {
   transition: transform 0.25s ease;
   flex: 0 0 auto;
 }
-.experience-card[data-open="true"] .experience-card__chev {
-  transform: rotate(180deg);
-}
 
-/* Newly revealed bullets get a small settle, deliberately TRANSFORM-ONLY.
-   An opacity fade here would re-create the bug this file already fixes once:
-   a frozen or never-started animation (backgrounded tab, throttled rAF) leaves
-   the element stuck on its `from` keyframe, and `from { opacity: 0 }` means 18
-   invisible bullets on a white card. Movement can fail safely; opacity cannot. */
-.experience-card[data-open="true"] .experience-card__list > li {
-  animation: expandSettle 0.3s ease;
-}
-@keyframes expandSettle {
-  from { transform: translateY(-5px); }
-  to   { transform: none; }
-}
 
 @media (prefers-reduced-motion: reduce) {
-  .experience-card[data-open="true"] .experience-card__list > li {
-    animation: none;
-  }
   .experience-card__chev {
     transition: none;
   }
@@ -2445,3 +2422,143 @@ html, body {
 
 /* The canvas now carries .particle-bg, so these two selectors that never
    matched anything are gone: .particle-background and canvas.particles. */
+
+
+/* --- Experience: the full list opens in a dialog ---------------------------
+   Expanding in place produced a 2000px card whose text still sat in a narrow
+   column with the right half of the row empty, and shoved everything below it
+   far down the page. A dialog reads the role at full width, scrolls on its own,
+   and closes.
+
+   No entrance animation carries content here. The panel is laid out and opaque
+   on first paint; only the backdrop tint fades, and it fades IN from
+   transparent, so a stalled animation leaves the dialog readable rather than
+   hidden. */
+.exp-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;                  /* over the fixed nav at 1000 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  background: rgba(0, 0, 0, 0.62);
+  -webkit-backdrop-filter: blur(3px);
+          backdrop-filter: blur(3px);
+}
+
+.exp-modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  max-height: calc(100dvh - 56px);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.7);
+  overflow: hidden;               /* so the header corners clip cleanly */
+}
+.exp-modal__panel:focus {
+  outline: none;                  /* it is focused programmatically, not tabbed to */
+}
+
+.exp-modal__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.exp-modal__heading { min-width: 0; }
+.exp-modal__title {
+  margin: 0;
+  font-size: 1.3125rem;
+  letter-spacing: -0.01em;
+}
+.exp-modal__role {
+  margin: 3px 0 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.exp-modal__meta {
+  margin: 10px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.exp-modal__close {
+  flex: 0 0 auto;
+  margin-left: auto;
+  width: 44px;                    /* full touch target, not a 20px glyph */
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.exp-modal__close:hover {
+  border-color: var(--border-bright);
+  background: var(--bg-secondary);
+}
+.exp-modal__close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.exp-modal__body {
+  padding: 20px 24px 26px;
+  overflow-y: auto;
+  overscroll-behavior: contain;   /* a flick at the end must not scroll the page */
+  -webkit-overflow-scrolling: touch;
+}
+.exp-modal__list {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+/* The card's bullets animate on reveal; these are already on screen when the
+   dialog opens, so they must not start offset. */
+.exp-modal__list .experience-card__bullet-item {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+.exp-modal__list .experience-card__bullet-item::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  /* Full-height sheet on a phone: a centred box with margins wastes the only
+     dimension there is. */
+  .exp-modal { padding: 0; }
+  .exp-modal__panel {
+    max-width: none;
+    max-height: 100dvh;
+    height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+  .exp-modal__head { padding: 16px 18px 14px; }
+  .exp-modal__body { padding: 16px 18px 32px; }
+  .exp-modal__title { font-size: 1.125rem; }
+}

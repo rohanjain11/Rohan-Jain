@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useReveal } from '../hooks/useReveal'
 import { EXPERIENCE } from '../data/content'
 import ParticleBackground from '../components/ParticleBackground'
@@ -44,17 +45,34 @@ const ICONS = {
 
 export default function Experience() {
   const reveals = EXPERIENCE.map(() => useReveal())
-  // Cards start collapsed so the grid reads as a scannable overview. A role with
-  // 18 highlights would otherwise dwarf whatever sits beside it.
-  const [expanded, setExpanded] = useState(() => new Set())
+  /* Cards stay collapsed to a scannable overview; the full list opens in a
+     dialog instead of growing the card. Expanding in place made a 2000px card
+     whose text sat in a narrow column with the right half of the row empty,
+     and pushed everything below it far down the page. */
+  const [openIdx, setOpenIdx] = useState(null)
+  const dialogRef = useRef(null)
+  const openerRef = useRef(null)
+  const open = openIdx !== null ? EXPERIENCE[openIdx] : null
 
-  const toggle = (idx) =>
-    setExpanded((prev) => {
-      const next = new Set(prev)
-      if (next.has(idx)) next.delete(idx)
-      else next.add(idx)
-      return next
-    })
+  const close = () => {
+    setOpenIdx(null)
+    /* Send focus back where it came from, or a keyboard user is dumped at the
+       top of the document. */
+    if (openerRef.current) openerRef.current.focus()
+  }
+
+  useEffect(() => {
+    if (openIdx === null) return
+    const onKey = (e) => { if (e.key === 'Escape') close() }
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    document.addEventListener('keydown', onKey)
+    dialogRef.current?.focus()
+    return () => {
+      document.body.style.overflow = prev
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [openIdx])
 
   return (
     <>
@@ -73,11 +91,9 @@ export default function Experience() {
         <div className="experience-container-wrapper">
           <div className="experience-grid">
             {EXPERIENCE.map((exp, idx) => {
-              const isOpen = expanded.has(idx)
               const { ordered, leadCount } = orderBullets(exp)
-              const shown = isOpen ? ordered : ordered.slice(0, leadCount)
+              const shown = ordered.slice(0, leadCount)
               const hidden = exp.bullets.length - leadCount
-              const panelId = `exp-panel-${idx}`
 
               return (
                 <article
@@ -88,7 +104,6 @@ export default function Experience() {
                      and the card would snap back to opacity 0 the moment you
                      expanded it. Open state travels as a data attribute. */
                   className="experience-card reveal"
-                  data-open={isOpen ? 'true' : 'false'}
                   ref={reveals[idx]}
                 >
                   <div className="experience-card-icon-bg" aria-hidden="true">
@@ -128,7 +143,7 @@ export default function Experience() {
                     </div>
 
                     <div className="experience-card__body">
-                      <ul className="experience-card__list" id={panelId}>
+                      <ul className="experience-card__list">
                         {shown.map((bullet, i) => (
                           <li key={i} className="experience-card__bullet-item">
                             {bullet}
@@ -141,11 +156,10 @@ export default function Experience() {
                       <button
                         type="button"
                         className="experience-card__more"
-                        onClick={() => toggle(idx)}
-                        aria-expanded={isOpen}
-                        aria-controls={panelId}
+                        onClick={(e) => { openerRef.current = e.currentTarget; setOpenIdx(idx) }}
+                        aria-haspopup="dialog"
                       >
-                        <span>{isOpen ? 'Show less' : `Show all ${exp.bullets.length} highlights`}</span>
+                        <span>{`Show all ${exp.bullets.length} highlights`}</span>
                         <svg
                           className="experience-card__chev"
                           width="16"
@@ -158,7 +172,7 @@ export default function Experience() {
                           strokeLinejoin="round"
                           aria-hidden="true"
                         >
-                          <polyline points="6 9 12 15 18 9" />
+                          <polyline points="9 18 15 12 9 6" />
                         </svg>
                       </button>
                     )}
@@ -169,6 +183,64 @@ export default function Experience() {
           </div>
         </div>
       </section>
+
+      {/* Portalled to <body>. Layout renders <main style={{position:'relative',
+          zIndex:1}}>, which is a stacking context: inside it the dialog's
+          z-index 1100 is still trapped under the fixed nav at 1000, and the
+          nav painted over the dialog header. */}
+      {open && createPortal(
+        <div className="exp-modal" onClick={close}>
+          <div
+            className="exp-modal__panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="exp-modal-title"
+            tabIndex={-1}
+            ref={dialogRef}
+            /* The backdrop closes on click; the panel must not pass its own
+               clicks up to it. */
+            onClick={(e) => e.stopPropagation()}
+          >
+            <header className="exp-modal__head">
+              <div className="exp-modal__heading">
+                <h2 className="exp-modal__title" id="exp-modal-title">{open.org}</h2>
+                <p className="exp-modal__role">{open.title}</p>
+                <p className="exp-modal__meta">
+                  <span className="experience-card__date">{open.dates}</span>
+                  <span className="experience-card__location">{open.location}</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                className="exp-modal__close"
+                onClick={close}
+                aria-label={`Close ${open.org} highlights`}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </header>
+
+            <div className="exp-modal__body">
+              {open.summary && <p className="experience-card__summary">{open.summary}</p>}
+
+              <div className="experience-card__tags">
+                {open.tags.map((tag, i) => (
+                  <span key={i} className="tag">{tag}</span>
+                ))}
+              </div>
+
+              <ul className="exp-modal__list">
+                {orderBullets(open).ordered.map((bullet, i) => (
+                  <li key={i} className="experience-card__bullet-item">{bullet}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   )
 }
