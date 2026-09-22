@@ -424,7 +424,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 80px;
+  padding-top: 132px;
   overflow: hidden;
 }
 
@@ -905,7 +905,7 @@ a {
 
 /* Page Hero */
 .page-hero {
-  padding: 100px 0 50px;
+  padding: 148px 0 52px;
   text-align: center;
   min-height: auto;
   position: relative;
@@ -1107,9 +1107,9 @@ a {
 
 .experience-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--gap-lg);
-  max-width: 100%;
+  max-width: 940px;
   margin: 0 auto;
   width: 100%;
 }
@@ -1129,7 +1129,8 @@ a {
   display: flex;
   flex-direction: column;
   height: fit-content;
-  max-height: calc(100vh - 360px);
+  /* No max-height. It used to be calc(100vh - 360px) with overflow:hidden, which
+     silently cut long roles off mid-sentence on desktop. Cards grow to fit. */
 }
 
 /* Experience Card Background Icons */
@@ -1413,8 +1414,6 @@ a {
   margin-bottom: var(--gap-sm);
   padding-top: var(--gap-sm);
   border-top: 1px solid var(--border);
-  max-height: 60px;
-  overflow-y: auto;
 }
 
 .experience-card__tags .tag {
@@ -1677,3 +1676,231 @@ a {
 .mb-1 { margin-bottom: var(--gap-sm); }
 .mb-2 { margin-bottom: var(--gap); }
 .mb-3 { margin-bottom: var(--gap-lg); }
+
+/* ============================================================================
+   REFINEMENTS - 2026-09-22
+   Layout and legibility pass. Everything here is deliberately at the end of the
+   file so it wins the cascade without needing !important.
+   ========================================================================== */
+
+/* --- Surfaces -------------------------------------------------------------
+   Cards were translucent over an animated particle field, so constellation
+   lines tracked through the text. Give every card an opaque surface and real
+   elevation; the background stays decorative and behind. */
+:root {
+  --bg-card: rgba(16, 16, 18, 0.92);
+  --elevation: 0 1px 2px rgba(0, 0, 0, 0.28), 0 8px 24px -8px rgba(0, 0, 0, 0.45);
+  --elevation-hover: 0 2px 4px rgba(0, 0, 0, 0.3), 0 18px 40px -12px rgba(0, 0, 0, 0.55);
+}
+[data-theme="light"] {
+  --bg-card: #ffffff;
+  --elevation: 0 1px 2px rgba(16, 24, 40, 0.05), 0 8px 24px -10px rgba(16, 24, 40, 0.14);
+  --elevation-hover: 0 2px 6px rgba(16, 24, 40, 0.07), 0 18px 40px -14px rgba(16, 24, 40, 0.2);
+}
+
+.card,
+.experience-card {
+  box-shadow: var(--elevation);
+}
+.card:hover,
+.experience-card:hover {
+  box-shadow: var(--elevation-hover);
+}
+
+/* The particle canvas is atmosphere, not content. Keep it faint and behind. */
+.particle-background,
+.particle-bg,
+canvas.particles {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* --- Rhythm ---------------------------------------------------------------
+   Page headings sat hard against the fixed navbar. The nav measures ~91px, so
+   content needs real clearance, and the eye needs room under the title. */
+.page-subtitle {
+  margin-top: 14px;
+}
+.section {
+  padding-top: 8px;
+}
+
+/* --- Experience -----------------------------------------------------------
+   Long roles (18 bullets) need measure control so lines stay readable. */
+.experience-card__bullets li,
+.experience-card li {
+  max-width: 78ch;
+}
+.experience-card__tags {
+  row-gap: 6px;
+}
+
+/* --- Projects -------------------------------------------------------------
+   Equal-height cards so a short project beside a long one does not leave a
+   ragged hole in the grid. */
+.grid--2 > .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.grid--2 {
+  align-items: stretch;
+}
+
+/* --- Phone ----------------------------------------------------------------
+   Tested at 390px. Chiefly: nothing may scroll sideways, type stays readable,
+   and every control clears a 44px touch target. */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .page-hero {
+    padding: 116px 0 32px;
+  }
+  .hero {
+    padding-top: 112px;
+  }
+  .page-title {
+    font-size: clamp(2rem, 8vw, 2.75rem);
+    line-height: 1.12;
+  }
+  .page-subtitle {
+    font-size: 1rem;
+    padding: 0 4px;
+  }
+  .hero__title {
+    font-size: clamp(2.25rem, 11vw, 3.25rem);
+    line-height: 1.08;
+  }
+  .hero__subtitle {
+    font-size: 1rem;
+  }
+
+  /* Cards: tighter padding, full-bleed-ish, and no 3D tilt (it reads as a
+     rendering glitch on a small screen and fights vertical scrolling). */
+  .card,
+  .experience-card {
+    padding: 20px 18px;
+    border-radius: 14px;
+  }
+  .card:hover,
+  .experience-card:hover,
+  .project-card-bg:hover {
+    transform: none;
+  }
+
+  .experience-card__bullets li,
+  .experience-card li,
+  .card li {
+    max-width: none;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  /* Decorative oversized watermark icons crowd a phone card. */
+  .experience-card-icon-bg,
+  .project-card-icon {
+    display: none;
+  }
+
+  /* Touch targets. */
+  .nav__link,
+  .btn,
+  .hero__social-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav__link {
+    padding: 10px 12px;
+  }
+
+  /* Long URLs and code-ish strings must not push the page sideways. */
+  .card, .experience-card, .page-subtitle, .hero__subtitle {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 480px) {
+  .container,
+  .experience-container-wrapper {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .hero__nav-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Phone navbar ---------------------------------------------------------
+   The bar was wrapping onto two rows (brand + burger, then theme + Resume),
+   making it 140px tall - taller than the page-hero's top padding, so the page
+   title rendered underneath it and was invisible. Keep it to one row and give
+   the hero enough clearance for the row that actually results. */
+@media (max-width: 768px) {
+  .nav__inner {
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 0.625rem 0;
+  }
+
+  .brand {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 1rem;
+  }
+  .brand > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .brand__mark {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 auto;
+  }
+
+  /* brand | theme + Resume | burger */
+  .nav__actions {
+    order: 2;
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+  .nav__toggle {
+    order: 3;
+    flex: 0 0 auto;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 6px 10px;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .nav__actions .btn--primary {
+    min-width: 0 !important;
+    padding: 9px 14px;
+    font-size: 0.8125rem;
+  }
+  .nav__actions .btn--ghost {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 8px;
+  }
+
+  /* Clearance under a single-row bar (~72px). */
+  .page-hero {
+    padding-top: 112px;
+  }
+  .hero {
+    padding-top: 104px;
+  }
+}
+
+@media (max-width: 380px) {
+  /* Smallest phones: the wordmark is the first thing worth dropping. */
+  .brand > span:last-child {
+    display: none;
+  }
+}
