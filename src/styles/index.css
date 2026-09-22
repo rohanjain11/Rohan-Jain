@@ -2092,22 +2092,22 @@ html, body {
    only on the LAST row, where it eats the leftover and draws it as a hairline
    instead of leaving a hole. A pseudo-element is not in the accessibility
    tree, so it costs nothing there. */
+/* A GRID, not a flex river.
+   The flex version grew each chip to justify the row, which meant the gaps
+   between items varied line by line and no two rows lined up: it read as
+   scattered. Uniform columns put every icon on the same x, so the eye gets
+   vertical order for free and the band scans as a table rather than a spill.
+   auto-fill (not auto-fit) keeps the column width stable when a band has
+   fewer items than columns, so Languages does not stretch six chips across
+   the full width while the band above it uses six narrow ones. */
 .wall {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 6px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 215px), 1fr));
+  gap: 2px 10px;
   align-items: stretch;
-}
-.wall::after {
-  content: '';
-  flex: 100 1 64px;
-  min-width: 64px;
-  align-self: center;
-  height: 1px;
-  background: var(--border);
 }
 
 /* Borderless by default. 76 outlined boxes read as clutter: the eye counts
@@ -2116,14 +2116,12 @@ html, body {
    flex-grow that justifies each row distributes as even spacing rather than
    as a ragged left edge inside an invisible box. */
 .wall__chip {
-  flex: 1 1 auto;
-  min-width: 0;      /* load-bearing: without it a long label widens the row past the viewport */
-  max-width: 100%;   /* load-bearing: the 375px no-overflow guarantee */
+  min-width: 0;      /* load-bearing: without it a long label widens the column past the viewport */
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 9px;
-  padding: 8px 12px;
+  padding: 8px 10px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 10px;
@@ -2167,9 +2165,7 @@ html, body {
   flex-direction: column;
   text-align: left;   /* the page justifies prose; a chip label is not prose */
 }
-/* One rule, two jobs: the hairline sits between rows instead of a border on
-   every chip, so rows stay legible as rows without 76 outlines. */
-.wall__chip + .wall__chip { position: relative; }
+
 .wall__name {
   font-size: 0.8125rem;
   font-weight: 600;
@@ -2270,8 +2266,8 @@ html, body {
 }
 
 @media (max-width: 768px) {
-  .wall { gap: 2px 4px; }
-  .wall__chip { padding: 7px 10px; gap: 8px; justify-content: flex-start; }
+  .wall { gap: 1px 6px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr)); }
+  .wall__chip { padding: 7px 8px; gap: 8px; }
   .wall-band { gap: 10px; padding-top: 16px; }
   .skill-wall { gap: 28px; }
   .ribbon { display: none; }   /* a phone does not need a decorative band */
