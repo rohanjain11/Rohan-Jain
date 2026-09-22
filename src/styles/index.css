@@ -2260,6 +2260,7 @@ html, body {
 .wall-jump {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;   /* the row rarely fills the width; left-aligned it read as off-centre under a centred title */
   gap: 8px;
   margin: 0 0 30px;
   padding: 0;
@@ -2520,6 +2521,52 @@ html, body {
   overflow-y: auto;
   overscroll-behavior: contain;   /* a flick at the end must not scroll the page */
   -webkit-overflow-scrolling: touch;
+}
+
+/* The platform scrollbar inside the dialog was a full-width grey slab running
+   the height of the panel and crowding the rounded corners. A slim inset pill
+   instead, on a transparent track, so the panel edge stays clean. Firefox gets
+   the two-property version; WebKit and Blink get the pseudo-elements. */
+.exp-modal__body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-bright) transparent;
+}
+.exp-modal__body::-webkit-scrollbar {
+  width: 10px;
+}
+.exp-modal__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.exp-modal__body::-webkit-scrollbar-thumb {
+  /* The transparent border plus background-clip is what insets the pill from
+     the panel edge; a plain narrow thumb would sit flush against it. */
+  background: var(--border-bright);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+.exp-modal__body::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+  background-clip: padding-box;
+}
+
+/* Same treatment for the phone menu panel, which also scrolls when it outgrows
+   the screen. */
+.nav__links {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-bright) transparent;
+}
+.nav__links::-webkit-scrollbar {
+  width: 8px;
+}
+.nav__links::-webkit-scrollbar-track {
+  background: transparent;
+}
+.nav__links::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  border-radius: 999px;
 }
 .exp-modal__list {
   list-style: none;
