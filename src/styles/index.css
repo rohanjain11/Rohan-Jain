@@ -92,6 +92,10 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  /* Always reserve the scrollbar gutter. Contact is exactly one viewport tall
+     and does not scroll, so without this it is ~15px wider than every page
+     that does, and the fixed nav visibly jumps right when you land on it. */
+  scrollbar-gutter: stable;
 }
 
 body {
