@@ -90,7 +90,7 @@ export default function Skills() {
         <div className="container">
           <h1 className="page-title">Skills & Expertise</h1>
           <p className="page-subtitle">
-            Technical skills and tools I use to build data-driven solutions. 
+            Technical skills and tools I use to build AI and ML systems.
             Focused on practical application and measurable results.
           </p>
         </div>
@@ -98,6 +98,15 @@ export default function Skills() {
 
       <section className="section" id="main" style={{ paddingTop: '0', paddingBottom: '20px' }}>
         <div className="container">
+          {/* Says where these came from. Without it a long list invites the
+              reader to assume every entry is production experience; some are
+              coursework or personal projects, and saying so is both honest and
+              a better answer than letting an interviewer find the seam. */}
+          <p className="wall-note">
+            I have studied or worked with everything listed below, either in my
+            professional work or through personal projects.
+          </p>
+
           <div className="ribbon" aria-hidden="true">
             <div className="ribbon__track">
               {/* Icons only, no text. aria-hidden stops a screen reader, but

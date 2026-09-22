@@ -2177,6 +2177,18 @@ html, body {
   overflow-wrap: anywhere;
 }
 
+/* Provenance line above the wall. */
+.wall-note {
+  margin: 0 0 22px;
+  max-width: 62ch;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+@media (max-width: 768px) {
+  .wall-note { font-size: 0.875rem; margin-bottom: 18px; }
+}
+
 /* Jump rail */
 .wall-jump {
   display: flex;
