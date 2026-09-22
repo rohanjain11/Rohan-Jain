@@ -2076,3 +2076,29 @@ html, body {
     transform: none;
   }
 }
+
+/* --- Justified prose ------------------------------------------------------
+   Justify the running text blocks so both edges line up. Hyphenation is not
+   optional here: justify without it pads word gaps until rivers of white open
+   down the paragraph, and these columns are narrow (roughly 55 characters in a
+   half-width experience card). `hyphens: auto` needs the lang attribute, which
+   index.html sets on <html>.
+
+   Headings, dates, tags, buttons and the centred subtitles stay as they are.
+   Justify only earns its keep on text that actually wraps several times. */
+.card__body,
+.experience-card__summary,
+.experience-card__bullet-item {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  text-wrap: pretty;
+}
+
+/* Long unbreakable tokens (URLs, sqlite-vec, oauth2-proxy, RandomizedSearchCV)
+   would otherwise force a single huge gap on the line that carries them. */
+.card__body,
+.experience-card__summary,
+.experience-card__bullet-item {
+  overflow-wrap: break-word;
+}
