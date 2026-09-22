@@ -170,10 +170,11 @@ a {
   }
 }
 
-/* The navbar keeps a wider gutter than the page content on a phone. At 16px
-   the RJ mark sat almost against the screen edge, which reads as clipped
-   rather than as a margin. Higher specificity than the .container rules above
-   on purpose, so this wins at every phone width. */
+/* The navbar keeps a wider gutter than the page content on anything narrower
+   than a desktop. At the stock 24px (tablet) and 16px (phone) the RJ mark sat
+   almost against the screen edge, which reads as clipped rather than as a
+   margin. Higher specificity than the .container rules above on purpose, so
+   these win at every width; the phone tier comes second so it wins the overlap. */
 @media (max-width: 768px) {
   .nav .container {
     padding-left: 22px;
@@ -212,14 +213,20 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 0;
+  /* Vertical longhands only. `padding: 1.25rem 0` also reset the horizontal
+     padding that .container sets on this same element, so the bar sat flush
+     against the viewport edge on anything narrower than --max-width. On a
+     desktop the max-width centring disguised it; on an iPad it does not. */
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
   gap: var(--gap);
   position: relative;
 }
 
 @media (max-width: 768px) {
   .nav__inner {
-    padding: 1rem 0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     flex-wrap: wrap;
   }
 }
@@ -1008,33 +1015,77 @@ a {
     font-size: 0.75rem;
   }
 
+  /* The dimmed layer behind the panel. Page text used to show through beside
+     and below the menu, so the menu read as a floating fragment rather than a
+     mode you are in. */
+  .nav__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(2px);
+            backdrop-filter: blur(2px);
+    z-index: 999;                  /* under .nav (1000), over the page */
+  }
+
   .nav__links {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--bg-secondary);
+    /* Opaque, not var(--bg-secondary) over a translucent bar: the panel must
+       not let the page read through it. */
+    background: var(--bg-primary);
     border-top: 1px solid var(--border);
     flex-direction: column;
-    padding: var(--gap-sm);
+    gap: 0;
+    padding: 6px 0 10px;
     display: none;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.6);
     z-index: 999;
+    max-height: calc(100dvh - 100%);
+    overflow-y: auto;
+    overscroll-behavior: contain;   /* a flick at the end must not scroll the page */
   }
 
   .nav__links.open {
     display: flex;
-    animation: slide-down 0.3s ease;
+    /* TRANSFORM ONLY. The old slide-down went from opacity 0, so a stalled or
+       never-started animation left the menu open but invisible: you tap the
+       burger and nothing appears. Same failure this file has fixed twice
+       elsewhere. A stalled transform is a panel that did not slide. */
+    animation: navPanelIn 0.22s ease;
   }
-  
+  @keyframes navPanelIn {
+    from { transform: translateY(-8px); }
+    to   { transform: none; }
+  }
+
   .nav__link {
     width: 100%;
-    padding: 14px 20px;
+    padding: 0 22px;
     text-align: left;
-    border-radius: var(--radius-sm);
-    min-height: 48px;
+    border-radius: 0;
+    min-height: 52px;
     display: flex;
     align-items: center;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    border-left: 3px solid transparent;
+  }
+  .nav__link + .nav__link {
+    border-top: 1px solid var(--border);
+  }
+  /* The 2px centred underline is a desktop affordance for a horizontal bar. In
+     a vertical list it rendered as a stray rule floating under the active row.
+     A left marker plus a filled row says the same thing in a list. */
+  .nav__link::after {
+    display: none;
+  }
+  .nav__link.active {
+    color: var(--text-primary);
+    font-weight: 600;
+    background: var(--bg-glass);
+    border-left-color: var(--accent);
   }
   
   .nav__actions {
@@ -1873,7 +1924,8 @@ html, body {
   .nav__inner {
     flex-wrap: nowrap;
     gap: 8px;
-    padding: 0.625rem 0;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
   }
 
   .brand {
@@ -1901,11 +1953,19 @@ html, body {
   .nav__toggle {
     order: 3;
     flex: 0 0 auto;
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 44px;
+    min-height: 44px;
     padding: 6px 10px;
     font-size: 1.25rem;
     line-height: 1;
+    /* Borderless: beside the filled Resume button a bordered box read as a
+       second, competing button. The glyph is enough. */
+    border-color: transparent;
+    background: transparent;
+  }
+  .nav__toggle[aria-expanded='true'] {
+    background: var(--bg-glass);
+    border-color: var(--border);
   }
 
   .nav__actions .btn--primary {

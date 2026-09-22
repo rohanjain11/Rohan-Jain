@@ -23,6 +23,21 @@ export default function Nav() {
     setMobileMenuOpen(false)
   }, [location])
 
+  /* Lock the page behind the panel and let Escape close it. Without the lock,
+     dragging on the dimmed backdrop scrolls the page underneath, which reads as
+     the menu being broken. */
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const onKey = (e) => { if (e.key === 'Escape') setMobileMenuOpen(false) }
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [mobileMenuOpen])
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       const nav = event.target.closest('.nav')
@@ -44,7 +59,20 @@ export default function Nav() {
   }, [mobileMenuOpen])
 
   return (
-    <nav className={`nav ${scrolled ? 'scrolled' : ''}`} aria-label="Primary">
+    <>
+      {/* Outside <nav> on purpose. .nav carries backdrop-filter, and a filter or
+          backdrop-filter makes an element the containing block for its
+          position:fixed descendants, so in there this clamped to the 64px bar
+          instead of covering the viewport. */}
+      {mobileMenuOpen && (
+        <div
+          className="nav__backdrop"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <nav className={`nav ${scrolled ? 'scrolled' : ''}`} aria-label="Primary">
       <div className="container nav__inner">
         <Link className="brand" to="/" onClick={() => setMobileMenuOpen(false)}>
           <span className="brand__mark">
@@ -101,6 +129,7 @@ export default function Nav() {
           </a>
         </div>
       </div>
-    </nav>
+      </nav>
+    </>
   )
 }
