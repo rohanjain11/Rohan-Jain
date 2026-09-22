@@ -1,10 +1,64 @@
 import { useReveal } from '../hooks/useReveal'
 import { SKILLS } from '../data/content'
 import ParticleBackground from '../components/ParticleBackground'
+import SkillIcon from '../components/SkillIcon'
+
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+
+/** "Databricks (Unity Catalog, ...)" -> name + detail. Presentation only; content.js is untouched. */
+function splitLabel(raw) {
+  const m = raw.match(/^([^(]+?)\s*\(([^)]*)\)\s*$/)
+  return m ? { name: m[1], detail: m[2] } : { name: raw, detail: null }
+}
+
+/**
+ * One category, full width. The craters came from pairing a 19-item category
+ * beside a 6-item one in a 2-up grid; nothing here is paired, so nothing can
+ * crater.
+ *
+ * No `reveal` class on the chips. `.reveal` is opacity 0 until an observer
+ * fires, and this page has already been bitten twice by content that depended
+ * on an animation to become visible. The chips are in normal flow, visible on
+ * first paint, and only their transform is animated.
+ */
+function SkillBand({ title, items }) {
+  const id = slug(title)
+  return (
+    <section className="wall-band" id={`cat-${id}`} aria-labelledby={`h-${id}`}>
+      <div className="wall-band__rail">
+        <h2 className="wall-band__title" id={`h-${id}`}>{title}</h2>
+        <p className="wall-band__count">{items.length} tools</p>
+      </div>
+      <ul className="wall">
+        {items.map((raw, i) => {
+          const { name, detail } = splitLabel(raw)
+          return (
+            <li className="wall__chip" key={raw} style={{ '--i': i }}>
+              <SkillIcon name={raw} />
+              <span className="wall__label">
+                <span className="wall__name">{name}</span>
+                {detail && <span className="wall__detail">{detail}</span>}
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+}
+
+/* Decorative only. Pulled from SKILLS by index so the ribbon can never drift
+   into carrying a skill that is not also in the wall below. */
+const RIBBON = [
+  SKILLS['LLM and Agents'][0], SKILLS['LLM and Agents'][2], SKILLS['Languages'][0],
+  SKILLS['Backend and Data'][0], SKILLS['Machine Learning'][9], SKILLS['Backend and Data'][10],
+  SKILLS['Backend and Data'][11], SKILLS['Frontend, Cloud and Observability'][0],
+  SKILLS['Machine Learning'][7], SKILLS['Backend and Data'][7], SKILLS['LLM and Agents'][8],
+  SKILLS['Frontend, Cloud and Observability'][7],
+]
 
 export default function Skills() {
   const skillKeys = Object.keys(SKILLS)
-  const reveals = skillKeys.map(() => useReveal())
   const reveal1 = useReveal()
   const reveal2 = useReveal()
   const reveal3 = useReveal()
@@ -26,83 +80,35 @@ export default function Skills() {
 
       <section className="section" id="main" style={{ paddingTop: '0', paddingBottom: '20px' }}>
         <div className="container">
-          <div className="grid grid--2 skills-grid">
-            {skillKeys.map((key, idx) => {
-              const getIcon = (skillKey) => {
-                if (skillKey === 'Languages') return 'code';
-                if (skillKey === 'Data and ML') return 'chart';
-                if (skillKey === 'Deep Learning') return 'brain';
-                if (skillKey === 'Data Quality and Reproducibility') return 'shield';
-                if (skillKey === 'Visualization and BI') return 'bar-chart';
-                if (skillKey === 'Engineering and Cloud') return 'server';
-                return 'code';
-              };
-              
-              return (
-              <div key={key} className="card reveal skill-card-bg" ref={reveals[idx]} data-icon={getIcon(key)}>
-                <div className="skill-card-icon" aria-hidden="true">
-                  {getIcon(key) === 'code' && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="16 18 22 12 16 6"/>
-                      <polyline points="8 6 2 12 8 18"/>
-                    </svg>
-                  )}
-                  {getIcon(key) === 'chart' && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                      <line x1="9" y1="7" x2="15" y2="7"/>
-                      <line x1="9" y1="11" x2="15" y2="11"/>
-                      <line x1="9" y1="15" x2="13" y2="15"/>
-                    </svg>
-                  )}
-                  {getIcon(key) === 'brain' && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="3"/>
-                      <path d="M12 1v3m0 16v3M1 12h3m16 0h3"/>
-                      <path d="M5.64 5.64l2.12 2.12m8.48 8.48l2.12 2.12M5.64 18.36l2.12-2.12m8.48-8.48l2.12-2.12"/>
-                      <circle cx="12" cy="12" r="8"/>
-                    </svg>
-                  )}
-                  {getIcon(key) === 'shield' && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                      <path d="M9 12l2 2 4-4"/>
-                    </svg>
-                  )}
-                  {getIcon(key) === 'bar-chart' && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="3" y1="20" x2="21" y2="20"/>
-                      <line x1="6" y1="20" x2="6" y2="14"/>
-                      <line x1="10" y1="20" x2="10" y2="8"/>
-                      <line x1="14" y1="20" x2="14" y2="12"/>
-                      <line x1="18" y1="20" x2="18" y2="6"/>
-                    </svg>
-                  )}
-                  {getIcon(key) === 'server' && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
-                      <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
-                      <line x1="6" y1="6" x2="6.01" y2="6"/>
-                      <line x1="6" y1="18" x2="6.01" y2="18"/>
-                    </svg>
-                  )}
-                </div>
-                <h2 className="card__title" style={{ marginBottom: '20px' }}>{key}</h2>
-                
-                {/* --i drives the entrance stagger; see .skill-tags in index.css. */}
-                <div className="skill-tags">
-                  {Array.isArray(SKILLS[key]) ? (
-                    SKILLS[key].map((skill, i) => (
-                      <span key={i} className="tag" style={{ '--i': i }}>{skill}</span>
-                    ))
-                  ) : (
-                    <span className="tag" style={{ '--i': 0 }}>{SKILLS[key]}</span>
-                  )}
-                </div>
-              </div>
-            );
-            })}
+          <div className="ribbon" aria-hidden="true">
+            <div className="ribbon__track">
+              {[0, 1].map((copy) =>
+                RIBBON.map((raw) => {
+                  const { name } = splitLabel(raw)
+                  return (
+                    <span className="ribbon__item" key={`${copy}-${raw}`}>
+                      <SkillIcon name={raw} />
+                      {name}
+                    </span>
+                  )
+                })
+              )}
+            </div>
+          </div>
+
+          <nav className="wall-jump" aria-label="Skill categories">
+            {skillKeys.map((k) => (
+              <a className="wall-jump__link" key={k} href={`#cat-${slug(k)}`}>
+                {k}
+                <span className="wall-jump__n">{SKILLS[k].length}</span>
+              </a>
+            ))}
+          </nav>
+
+          <div className="skill-wall">
+            {skillKeys.map((k) => (
+              <SkillBand key={k} title={k} items={SKILLS[k]} />
+            ))}
           </div>
 
           <div className="section__header" style={{ marginTop: '64px', marginBottom: '32px' }}>

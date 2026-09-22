@@ -2013,70 +2013,6 @@ html, body {
   }
 }
 
-/* --- Skills: let the cards breathe, let the tags arrive ---------------------
-   Two problems, one section. First, .grid--2 stretches every card to the
-   tallest in the row (right for Projects, wrong here): Languages holds six
-   tags and was being stretched to match a card holding twenty-five, leaving a
-   crater of empty space. The skills grid sizes each card to its own content
-   instead, which reads as deliberate rather than broken.
-
-   Second, the tags. They now arrive as a staggered pop rather than appearing
-   all at once, and they are built as an ANIMATION off a visible base state,
-   never a transition out of opacity 0. If the animation never runs (reduced
-   motion, a backgrounded tab, a throttled frame loop) the tags are simply
-   there. Movement is allowed to fail; legibility is not. */
-.skills-grid {
-  align-items: start;
-}
-.skills-grid > .card {
-  height: auto;
-}
-
-.skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-/* Base state is the finished state. The keyframe only borrows the element
-   during its delay, via animation-fill-mode: backwards. */
-.skills-grid .card.visible .tag {
-  animation: tagPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-  animation-delay: calc(var(--i, 0) * 22ms);
-}
-@keyframes tagPop {
-  /* TRANSFORM ONLY. An earlier draft faded from opacity 0 and measured at
-     opacity 0 in a backgrounded tab: fill-mode backwards pins the element to
-     the `from` frame until the animation starts, so one that never starts
-     leaves every tag invisible. A stalled transform is a tag sitting 10px low.
-     A stalled fade is no skills page at all. */
-  from { transform: scale(0.85) translateY(10px); }
-  to   { transform: none; }
-}
-
-/* Springier than the shared .tag:hover, and it lifts as well as scales, so a
-   pointer sweeping the card makes the pills feel like they float. */
-.skills-grid .tag {
-  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-              background 0.18s ease, color 0.18s ease,
-              border-color 0.18s ease, box-shadow 0.22s ease;
-  will-change: transform;
-}
-.skills-grid .tag:hover {
-  transform: translateY(-3px) scale(1.06);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .skills-grid .card.visible .tag {
-    animation: none;
-  }
-  .skills-grid .tag,
-  .skills-grid .tag:hover {
-    transition: none;
-    transform: none;
-  }
-}
-
 /* --- Justified prose ------------------------------------------------------
    Justify the running text blocks so both edges line up. Hyphenation is not
    optional here: justify without it pads word gaps until rivers of white open
@@ -2101,4 +2037,253 @@ html, body {
 .experience-card__summary,
 .experience-card__bullet-item {
   overflow-wrap: break-word;
+}
+
+/* ============================================================================
+   SKILLS: the wall.
+
+   The craters were arithmetic, not styling. grid--2 paired "LLM and Agents"
+   (19 items) against "Languages" (6), and "Frontend, Cloud and Observability"
+   (11) against "Visualization and BI" (6). Rows align, so a 19-vs-6 mismatch
+   becomes a 300px hole. align-items:start fixed the earlier stretch bug but
+   could not fix this, because nothing side by side can: the fix is to stop
+   pairing. Every category gets the full width, the short ones fill one row
+   instead of a third of a column, and flex-grow justifies each interior row to
+   both edges so no row ends ragged.
+
+   All 76 skills are in normal document flow, visible on first paint, with no
+   hidden base state anywhere. Motion is garnish on top.
+   ========================================================================== */
+.skill-wall {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.wall-band {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  scroll-margin-top: 120px;   /* the fixed nav must not cover a jumped-to heading */
+}
+@media (min-width: 1024px) {
+  /* Label rail beside the river, using the horizontal space the 2-up grid wasted. */
+  .wall-band {
+    grid-template-columns: 200px minmax(0, 1fr);
+    align-items: start;
+  }
+}
+.wall-band__title {
+  margin: 0;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+}
+.wall-band__count {
+  margin: 5px 0 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The river. flex-grow on the chips justifies every FULL row to both edges.
+   ::after has a huge grow factor, so it is irrelevant on full rows and bites
+   only on the LAST row, where it eats the leftover and draws it as a hairline
+   instead of leaving a hole. A pseudo-element is not in the accessibility
+   tree, so it costs nothing there. */
+.wall {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: stretch;
+}
+.wall::after {
+  content: '';
+  flex: 100 1 64px;
+  min-width: 64px;
+  align-self: center;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Borderless by default. 76 outlined boxes read as clutter: the eye counts
+   edges before it reads words. The chip keeps a TRANSPARENT 1px border so
+   nothing shifts when hover paints one in, and content is centred so the
+   flex-grow that justifies each row distributes as even spacing rather than
+   as a ragged left edge inside an invisible box. */
+.wall__chip {
+  flex: 1 1 auto;
+  min-width: 0;      /* load-bearing: without it a long label widens the row past the viewport */
+  max-width: 100%;   /* load-bearing: the 375px no-overflow guarantee */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  line-height: 1.25;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.18s ease, background 0.18s ease;
+}
+.wall__chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--border);
+  background: var(--bg-glass);
+}
+
+.wall__icon {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  opacity: 0.55;
+  transition: opacity 0.18s ease;
+}
+.wall__chip:hover .wall__icon { opacity: 1; }
+
+/* Fallback so an unmapped skill never leaves an empty icon slot. */
+.wall__mono {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-primary);
+  background: var(--border);
+}
+
+.wall__label {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: left;   /* the page justifies prose; a chip label is not prose */
+}
+/* One rule, two jobs: the hairline sits between rows instead of a border on
+   every chip, so rows stay legible as rows without 76 outlines. */
+.wall__chip + .wall__chip { position: relative; }
+.wall__name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+.wall__detail {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* Jump rail */
+.wall-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 30px;
+  padding: 0;
+}
+.wall-jump__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 15px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-glass);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+.wall-jump__link:hover {
+  border-color: var(--border-bright);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+.wall-jump__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.wall-jump__n {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chip settle. TRANSFORM ONLY, and the base state is the finished state.
+   A from{opacity:0} here would re-create the bug this file has fixed twice:
+   fill-mode backwards pins an element to its first frame until the animation
+   starts, so one that never starts hides the content for good. A stalled
+   transform is a chip sitting 8px low. */
+.wall__chip {
+  animation: chipSettle 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 16ms);
+}
+@keyframes chipSettle {
+  from { transform: translateY(8px) scale(0.96); }
+  to   { transform: none; }
+}
+
+/* The running ribbon: the one piece of page-scale motion, and purely
+   decorative. Every name in it also appears in the wall below, which is the
+   only reason its overflow:hidden is acceptable; nothing is reachable only
+   here. aria-hidden on the container means a screen reader reads the
+   duplicated track zero times rather than twice, and it holds nothing
+   focusable, which is what makes aria-hidden legal. */
+.ribbon {
+  overflow: hidden;
+  margin: 0 0 28px;
+  padding: 6px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.ribbon__track {
+  display: flex;
+  gap: 26px;
+  width: max-content;
+  animation: ribbonRun 46s linear infinite;
+}
+.ribbon:hover .ribbon__track { animation-play-state: paused; }
+.ribbon__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.ribbon__item .wall__icon { opacity: 0.55; }
+@keyframes ribbonRun {
+  from { transform: none; }
+  to   { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .wall { gap: 2px 4px; }
+  .wall__chip { padding: 7px 10px; gap: 8px; justify-content: flex-start; }
+  .wall-band { gap: 10px; padding-top: 16px; }
+  .skill-wall { gap: 28px; }
+  .ribbon { display: none; }   /* a phone does not need a decorative band */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wall__chip,
+  .wall__chip:hover {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+  .ribbon__track { animation: none; }
+  .wall-jump__link:hover { transform: none; }
 }
