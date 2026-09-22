@@ -6,7 +6,6 @@ import ParticleBackground from '../components/ParticleBackground'
 export default function Contact() {
   const reveal1 = useReveal()
   const reveal2 = useReveal()
-  const reveal3 = useReveal()
 
   const contactMethods = [
     {
@@ -114,22 +113,6 @@ export default function Contact() {
                   )
                 ))}
               </div>
-            </div>
-          </div>
-
-          <div className="card reveal" ref={reveal3} style={{ marginTop: '48px', textAlign: 'center' }}>
-            <h2 className="card__title" style={{ marginBottom: '16px' }}>About This Portfolio</h2>
-            <p className="card__body" style={{ maxWidth: '600px', margin: '0 auto 24px' }}>
-              This portfolio is built with modern web technologies (React, Vite) focusing on performance, 
-              accessibility, and a clean user experience. Designed to showcase data science work with 
-              interactive visualizations and smooth animations.
-            </p>
-            <div className="tags" style={{ justifyContent: 'center' }}>
-              <span className="tag">React</span>
-              <span className="tag">Vite</span>
-              <span className="tag">Modern CSS</span>
-              <span className="tag">Responsive</span>
-              <span className="tag">Accessible</span>
             </div>
           </div>
         </div>

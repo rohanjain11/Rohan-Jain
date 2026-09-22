@@ -894,6 +894,19 @@ a {
   box-shadow: var(--shadow-glow);
 }
 
+/* Sticky footer. Short pages (Contact is one card row tall) used to leave the
+   footer floating mid-screen with dead background below it. The shell is a
+   column, main takes the slack, and the footer lands on the bottom edge. */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;   /* dvh so mobile browser chrome does not overshoot */
+}
+#root > main {
+  flex: 1 0 auto;
+}
+
 /* Footer */
 .footer {
   padding: var(--gap-lg) 0;
