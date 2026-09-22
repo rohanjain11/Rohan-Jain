@@ -77,6 +77,10 @@ export const EXPERIENCE = [
     location: "San Francisco, CA",
     tags: ["LangGraph", "MCP", "LiteLLM", "Ollama", "FastAPI", "React/TypeScript", "Postgres", "Temporal", "Kubernetes", "Azure AKS", "ArgoCD", "Databricks", "Langfuse"],
     icon: "chip",
+    /* Headline points, chosen not sliced: the evaluation harness, the biggest
+       build, the money saved, and the time I overruled myself. Everything else
+       is one click away. */
+    previewIdx: [0, 2, 13, 1],
     bullets: [
       "Owned tool selection for an on-prem LLM agent (LangGraph ReAct over LiteLLM): 132 MCP tool schemas exceeded the 32K-token window; built a 115-question evaluation harness that raised tool recall from 0.47 to 0.97 on production questions and 0.34 to 0.98 on infrastructure questions.",
       "Killed my own recommended tool-gate design after the same harness measured it at 0.03 infrastructure recall, shipped the conditional gate instead in about 80 lines with zero new dependencies, and stamped the correction on the original document so nobody built the dead version.",
@@ -107,6 +111,7 @@ export const EXPERIENCE = [
     location: "Boulder, CO (remote-first)",
     tags: ["Python", "scikit-learn", "TensorFlow/Keras", "XGBoost", "pandas", "NumPy", "Matplotlib", "CRPS", "MAE", "MSE"],
     icon: "cloud",
+    previewIdx: [0, 1, 4],
     bullets: [
       "Replaced a legacy SVM bias-correction step with a tuned Random Forest, using RandomizedSearchCV over n_estimators, max_depth, min_samples_split and feature selection with cross-validation; reduced temperature MAE from 0.73 to 0.39 (47%) and humidity MAE from 4.68 to 2.37 (54%), and the model went to full production promotion.",
       "Built a probabilistic CNN-LSTM with a custom CRPS loss for calibrated ensemble uncertainty, packaged as reproducible artifact bundles (model, preprocessing, metadata, verification plots); best reported CRPS was 0.1787.",
@@ -130,6 +135,7 @@ export const EXPERIENCE = [
     location: "Boulder, CO",
     tags: ["R", "Python", "Docker", "AWS EC2", "AWS Secrets Manager", "Keycloak OIDC", "ShinyProxy Operator", "Caddy", "Cloudflare", "Grafana/Loki/Prometheus", "Bash"],
     icon: "beaker",
+    previewIdx: [0, 4, 5],
     bullets: [
       "Reverse-engineered legacy Thermo Isodat binaries (MFC CArchive) by decompiling DLLs and recovering the per-class Serialize() field orderings, then built deterministic R readers with inheritance-aware decoding and fail-fast validation.",
       "Got end-to-end .scn parsing working and turned it into a repeatable decoding pattern covering roughly 7 to 8 instrument file types, with a structured artifact inventory separating MFC from NRBF binaries.",

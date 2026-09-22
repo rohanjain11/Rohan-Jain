@@ -3,8 +3,21 @@ import { useReveal } from '../hooks/useReveal'
 import { EXPERIENCE } from '../data/content'
 import ParticleBackground from '../components/ParticleBackground'
 
-/** How many highlights a collapsed card shows before "Show all". */
+/** Fallback preview size for a role that does not name its own headline points. */
 const PREVIEW_COUNT = 3
+
+/**
+ * A collapsed card should lead with the points worth reading, not with whatever
+ * happens to sit at the top of the array. `previewIdx` in content.js names them;
+ * the rest follow in their original order once the card is open, so expanding
+ * adds to what you were reading instead of reshuffling it.
+ */
+function orderBullets(exp) {
+  const all = exp.bullets.map((_, i) => i)
+  const lead = exp.previewIdx ?? all.slice(0, PREVIEW_COUNT)
+  const rest = all.filter((i) => !lead.includes(i))
+  return { ordered: [...lead, ...rest].map((i) => exp.bullets[i]), leadCount: lead.length }
+}
 
 const ICONS = {
   chip: (
@@ -61,8 +74,9 @@ export default function Experience() {
           <div className="experience-grid">
             {EXPERIENCE.map((exp, idx) => {
               const isOpen = expanded.has(idx)
-              const shown = isOpen ? exp.bullets : exp.bullets.slice(0, PREVIEW_COUNT)
-              const hidden = exp.bullets.length - PREVIEW_COUNT
+              const { ordered, leadCount } = orderBullets(exp)
+              const shown = isOpen ? ordered : ordered.slice(0, leadCount)
+              const hidden = exp.bullets.length - leadCount
               const panelId = `exp-panel-${idx}`
 
               return (
