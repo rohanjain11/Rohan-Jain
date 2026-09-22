@@ -101,6 +101,8 @@ export default function Contact() {
                     <a
                       key={idx}
                       href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
                       className="btn btn--ghost"
                       style={{
                         justifyContent: 'flex-start',

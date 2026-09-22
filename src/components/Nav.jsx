@@ -84,10 +84,16 @@ export default function Nav() {
             {theme === 'dark' ? '☀' : '☾'}
           </button>
 
+          {/* No `download` attribute: that forced a save instead of a view, and a
+              recruiter wants to read the thing, not manage a file. GitHub Pages
+              serves it as application/pdf with no Content-Disposition, so the
+              browser renders it inline. Opens in a new tab so the portfolio
+              stays put behind it. */}
           <a
             className="btn btn--primary"
             href={SITE.ctas.resumeMaster.href}
-            download="Rohan-Jain-Resume.pdf"
+            target="_blank"
+            rel="noreferrer"
             style={{ minWidth: '100px' }}
             onClick={() => setMobileMenuOpen(false)}
           >

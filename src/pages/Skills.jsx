@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useReveal } from '../hooks/useReveal'
 import { SKILLS } from '../data/content'
 import ParticleBackground from '../components/ParticleBackground'
@@ -59,6 +60,23 @@ const RIBBON = [
 
 export default function Skills() {
   const skillKeys = Object.keys(SKILLS)
+
+  /* This route is lazy-loaded, so on a cold load of /skills#cat-machine-learning
+     the browser looks for the target before the chunk has mounted it, finds
+     nothing, and stays at the top. Re-run the jump once we exist. In-page
+     clicks already work; this is only the cold-load and refresh path. */
+  useEffect(() => {
+    const id = window.location.hash.slice(1)
+    if (!id) return
+    /* behavior 'auto', not the inherited smooth: a smooth scroll is animated,
+       and the layout shift as the rest of the page settles cancels it midway,
+       which is why the first version of this landed back at scrollY 0. Jump
+       once now and once after layout settles, so a late shift cannot strand us. */
+    const jump = () => document.getElementById(id)?.scrollIntoView({ behavior: 'auto' })
+    jump()
+    const t = setTimeout(jump, 150)
+    return () => clearTimeout(t)
+  }, [])
   const reveal1 = useReveal()
   const reveal2 = useReveal()
   const reveal3 = useReveal()
@@ -82,16 +100,17 @@ export default function Skills() {
         <div className="container">
           <div className="ribbon" aria-hidden="true">
             <div className="ribbon__track">
+              {/* Icons only, no text. aria-hidden stops a screen reader, but
+                  find-in-page ignores it entirely, so rendering the names here
+                  put the first two Ctrl+F hits for Kubernetes, Python, React
+                  and Databricks inside a clipped track the reader cannot see.
+                  Marks carry no searchable text, so the problem disappears. */}
               {[0, 1].map((copy) =>
-                RIBBON.map((raw) => {
-                  const { name } = splitLabel(raw)
-                  return (
-                    <span className="ribbon__item" key={`${copy}-${raw}`}>
-                      <SkillIcon name={raw} />
-                      {name}
-                    </span>
-                  )
-                })
+                RIBBON.map((raw) => (
+                  <span className="ribbon__item" key={`${copy}-${raw}`}>
+                    <SkillIcon name={raw} />
+                  </span>
+                ))
               )}
             </div>
           </div>

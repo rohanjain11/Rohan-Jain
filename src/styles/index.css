@@ -228,17 +228,17 @@ a {
 }
 
 .brand__mark {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-sm);
+  width: 38px;
+  height: 38px;
+  /* No border: it was 2px of var(--accent) sitting on a var(--accent) fill,
+     which only ever read as extra bulk. No glow and no rotateY skew either;
+     a monogram does not need to be lit and tilted. Just a rounded square. */
+  border-radius: 11px;
   background: var(--accent);
-  box-shadow: var(--shadow-glow);
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: perspective(500px) rotateY(-5deg);
-  transition: var(--transition);
-  border: 2px solid var(--accent);
+  transition: var(--transition-fast);
 }
 
 .brand__mark-text {
@@ -259,8 +259,7 @@ a {
 }
 
 .brand:hover .brand__mark {
-  transform: perspective(500px) rotateY(0deg) scale(1.05);
-  box-shadow: var(--shadow-glow), 0 0 30px rgba(255, 255, 255, 0.2);
+  transform: scale(1.06);
 }
 
 [data-theme="light"] .brand:hover .brand__mark {
@@ -2245,21 +2244,21 @@ html, body {
 }
 .ribbon__track {
   display: flex;
-  gap: 26px;
   width: max-content;
   animation: ribbonRun 46s linear infinite;
 }
 .ribbon:hover .ribbon__track { animation-play-state: paused; }
+/* margin-right, NOT gap on the track. `gap` puts 23 gaps between 24 items, so
+   one copy plus its trailing gap is wider than half the track and the -50%
+   loop snapped back by gap/2 (measured: 13px) on every cycle. A trailing
+   margin gives 24 items 24 gaps, and -50% lands exactly. */
 .ribbon__item {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  margin-right: 34px;
   color: var(--text-muted);
-  white-space: nowrap;
 }
-.ribbon__item .wall__icon { opacity: 0.55; }
+.ribbon__item .wall__icon { width: 22px; height: 22px; opacity: 0.45; }
 @keyframes ribbonRun {
   from { transform: none; }
   to   { transform: translateX(-50%); }
@@ -2268,9 +2267,14 @@ html, body {
 @media (max-width: 768px) {
   .wall { gap: 1px 6px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr)); }
   .wall__chip { padding: 7px 8px; gap: 8px; }
+  /* The ribbon stays on phones. It was display:none here, which is why it
+     vanished on mobile; it is the one bit of motion on the page and a phone is
+     where it gets looked at. Smaller marks, tighter spacing, same loop. */
+  .ribbon { margin-bottom: 20px; }
+  .ribbon__item { margin-right: 24px; }
+  .ribbon__item .wall__icon { width: 19px; height: 19px; }
   .wall-band { gap: 10px; padding-top: 16px; }
   .skill-wall { gap: 28px; }
-  .ribbon { display: none; }   /* a phone does not need a decorative band */
 }
 
 @media (prefers-reduced-motion: reduce) {
