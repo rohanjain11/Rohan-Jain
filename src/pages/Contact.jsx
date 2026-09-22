@@ -29,7 +29,7 @@ export default function Contact() {
   ]
 
   const quickLinks = [
-    ...Object.values(SITE.ctas).map((c) => ({ label: c.label, href: c.href })),
+    { label: SITE.ctas.resumeMaster.label, href: SITE.ctas.resumeMaster.href },
     { label: 'Experience', to: '/experience' },
     { label: 'Projects', to: '/projects' },
     { label: 'Skills', to: '/skills' },

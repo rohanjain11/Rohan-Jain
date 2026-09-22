@@ -14,12 +14,9 @@ export const SITE = {
   ],
   valueProp: "Builds LLM agent systems that hold up in production: evaluation harnesses, fail-closed guardrails, incident root cause.",
   ctas: {
-    resumeMaster: { label: "Resume (General)", href: `${import.meta.env.BASE_URL}assets/docs/resume-master.pdf`.replace(/\/+/g, '/') },
-    resumeAI: { label: "Resume (AI Engineer)", href: `${import.meta.env.BASE_URL}assets/docs/resume-ai.pdf`.replace(/\/+/g, '/') },
-    resumeML: { label: "Resume (ML Engineer)", href: `${import.meta.env.BASE_URL}assets/docs/resume-ml.pdf`.replace(/\/+/g, '/') },
-    resumeSWE: { label: "Resume (Software Engineer)", href: `${import.meta.env.BASE_URL}assets/docs/resume-swe.pdf`.replace(/\/+/g, '/') },
-    resumeDE: { label: "Resume (Data Engineer)", href: `${import.meta.env.BASE_URL}assets/docs/resume-de.pdf`.replace(/\/+/g, '/') },
-    resumeDA: { label: "Resume (Data Analyst)", href: `${import.meta.env.BASE_URL}assets/docs/resume-da.pdf`.replace(/\/+/g, '/') },
+    /* One resume link, deliberately. The role-tailored PDFs are for sending
+       with an application, not for a visitor to pick from. */
+    resumeMaster: { label: "Resume", href: `${import.meta.env.BASE_URL}assets/docs/resume-master.pdf`.replace(/\/+/g, '/') },
   },
 };
 
