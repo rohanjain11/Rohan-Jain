@@ -26,6 +26,14 @@ export default function Projects() {
             {PROJECTS.map((project, idx) => (
               <div key={idx} className="card reveal project-card-bg" ref={reveals[idx]} data-icon={project.icon}>
                 <div className="project-card-icon" aria-hidden="true">
+                  {project.icon === 'chart' && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 3v18h18"/>
+                      <rect x="7" y="12" width="3" height="6"/>
+                      <rect x="12" y="8" width="3" height="10"/>
+                      <rect x="17" y="4" width="3" height="14"/>
+                    </svg>
+                  )}
                   {project.icon === 'bicycle' && (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="5.5" cy="17.5" r="3.5"/>
