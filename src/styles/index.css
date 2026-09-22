@@ -265,7 +265,12 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: var(--transition-fast);
+  /* transform only, NOT `all`. The only thing here that should animate is the
+     hover scale. With `all`, the fill and the monogram colour were animatable,
+     and toggling into dark left the badge painted black on black for hundreds
+     of ms. Colour that comes from a theme variable should follow the variable
+     instantly. */
+  transition: transform 0.15s ease;
 }
 
 .brand__mark-text {
@@ -276,14 +281,10 @@ a {
   line-height: 1;
 }
 
-[data-theme="light"] .brand__mark {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-[data-theme="light"] .brand__mark-text {
-  color: var(--bg-primary);
-}
+/* The two [data-theme="light"] overrides that used to sit here re-declared
+   background: var(--accent) and color: var(--bg-primary), which is exactly what
+   the base rules already say. Identical declarations from the same variables,
+   so they changed nothing and only gave the cascade another way to go wrong. */
 
 .brand:hover .brand__mark {
   transform: scale(1.06);
@@ -2546,4 +2547,15 @@ html, body {
   .exp-modal__head { padding: 16px 18px 14px; }
   .exp-modal__body { padding: 16px 18px 32px; }
   .exp-modal__title { font-size: 1.125rem; }
+}
+
+
+/* Set for the two frames it takes to repaint a theme change; see useTheme.js.
+   Transitions only: the ribbon and the chip settle are animations, and
+   stopping those mid-flight would produce a visible jump of its own. */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
 }
