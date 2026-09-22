@@ -7,6 +7,8 @@ export default function Skills() {
   const reveals = skillKeys.map(() => useReveal())
   const reveal1 = useReveal()
   const reveal2 = useReveal()
+  const reveal3 = useReveal()
+  const reveal4 = useReveal()
 
   return (
     <>
@@ -105,24 +107,48 @@ export default function Skills() {
           <div className="section__header" style={{ marginTop: '64px', marginBottom: '32px' }}>
             <h2 className="section__title">Work Philosophy</h2>
             <p className="section__subtitle">
-              How I ensure quality and reproducibility in data science projects
+              Four habits that show up in everything I ship, and the evidence for each
             </p>
           </div>
 
           <div className="grid grid--2">
             <div className="card reveal" ref={reveal1}>
-              <h3 className="card__title">Reproducible Artifacts</h3>
+              <h3 className="card__title">Measure Before I Believe</h3>
               <p className="card__body">
-                Consistent training and evaluation scripts, saved plots and metrics, and documentation 
-                that explains what changed and why. Every project includes versioned code, data, and results.
+                I built a 115-question evaluation harness for an on-prem LLM agent and then let it
+                overrule me. It took tool recall from 0.47 to 0.97, and it scored my own recommended
+                gate design at 0.03. I shipped the alternative in about 80 lines and stamped the
+                correction on the original document so nobody built the dead version.
               </p>
             </div>
 
             <div className="card reveal" ref={reveal2}>
+              <h3 className="card__title">Fail Closed by Default</h3>
+              <p className="card__body">
+                The MCP server I designed is read-only by construction, with a mandatory time-window
+                bound on every scanning query. I proved the containment instead of asserting it: an
+                adversarial prompt-injection test instructed the agent to delete production data and
+                confirmed it could not.
+              </p>
+            </div>
+
+            <div className="card reveal" ref={reveal3}>
+              <h3 className="card__title">Reproducible Artifacts</h3>
+              <p className="card__body">
+                Consistent training and evaluation scripts, and artifact bundles that carry the model,
+                its preprocessing, metadata and verification plots together rather than scattered
+                across a notebook. Documentation says what changed and why, so the next person can
+                extend the work without me.
+              </p>
+            </div>
+
+            <div className="card reveal" ref={reveal4}>
               <h3 className="card__title">Quality Gates</h3>
               <p className="card__body">
-                Schema, unit, and range validation checks plus baseline comparisons to prevent silent 
-                regressions during inference. Automated testing ensures data integrity throughout the pipeline.
+                Schema, unit and range checks at ingestion, fail-fast on an integrity failure, and an
+                inference gate that rejects any model failing to beat its own baseline. That gate cut
+                failed production runs by 90% and saved about 20 engineer-hours a month with no manual
+                review.
               </p>
             </div>
           </div>
