@@ -26,7 +26,7 @@ export default function Skills() {
 
       <section className="section" id="main" style={{ paddingTop: '0', paddingBottom: '20px' }}>
         <div className="container">
-          <div className="grid grid--2">
+          <div className="grid grid--2 skills-grid">
             {skillKeys.map((key, idx) => {
               const getIcon = (skillKey) => {
                 if (skillKey === 'Languages') return 'code';
@@ -90,13 +90,14 @@ export default function Skills() {
                 </div>
                 <h2 className="card__title" style={{ marginBottom: '20px' }}>{key}</h2>
                 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {/* --i drives the entrance stagger; see .skill-tags in index.css. */}
+                <div className="skill-tags">
                   {Array.isArray(SKILLS[key]) ? (
                     SKILLS[key].map((skill, i) => (
-                      <span key={i} className="tag">{skill}</span>
+                      <span key={i} className="tag" style={{ '--i': i }}>{skill}</span>
                     ))
                   ) : (
-                    <span className="tag">{SKILLS[key]}</span>
+                    <span className="tag" style={{ '--i': 0 }}>{SKILLS[key]}</span>
                   )}
                 </div>
               </div>

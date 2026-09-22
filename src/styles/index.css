@@ -2012,3 +2012,67 @@ html, body {
     transition: none;
   }
 }
+
+/* --- Skills: let the cards breathe, let the tags arrive ---------------------
+   Two problems, one section. First, .grid--2 stretches every card to the
+   tallest in the row (right for Projects, wrong here): Languages holds six
+   tags and was being stretched to match a card holding twenty-five, leaving a
+   crater of empty space. The skills grid sizes each card to its own content
+   instead, which reads as deliberate rather than broken.
+
+   Second, the tags. They now arrive as a staggered pop rather than appearing
+   all at once, and they are built as an ANIMATION off a visible base state,
+   never a transition out of opacity 0. If the animation never runs (reduced
+   motion, a backgrounded tab, a throttled frame loop) the tags are simply
+   there. Movement is allowed to fail; legibility is not. */
+.skills-grid {
+  align-items: start;
+}
+.skills-grid > .card {
+  height: auto;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Base state is the finished state. The keyframe only borrows the element
+   during its delay, via animation-fill-mode: backwards. */
+.skills-grid .card.visible .tag {
+  animation: tagPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 22ms);
+}
+@keyframes tagPop {
+  /* TRANSFORM ONLY. An earlier draft faded from opacity 0 and measured at
+     opacity 0 in a backgrounded tab: fill-mode backwards pins the element to
+     the `from` frame until the animation starts, so one that never starts
+     leaves every tag invisible. A stalled transform is a tag sitting 10px low.
+     A stalled fade is no skills page at all. */
+  from { transform: scale(0.85) translateY(10px); }
+  to   { transform: none; }
+}
+
+/* Springier than the shared .tag:hover, and it lifts as well as scales, so a
+   pointer sweeping the card makes the pills feel like they float. */
+.skills-grid .tag {
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.18s ease, color 0.18s ease,
+              border-color 0.18s ease, box-shadow 0.22s ease;
+  will-change: transform;
+}
+.skills-grid .tag:hover {
+  transform: translateY(-3px) scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-grid .card.visible .tag {
+    animation: none;
+  }
+  .skills-grid .tag,
+  .skills-grid .tag:hover {
+    transition: none;
+    transform: none;
+  }
+}
