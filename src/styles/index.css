@@ -170,6 +170,17 @@ a {
   }
 }
 
+/* The navbar keeps a wider gutter than the page content on a phone. At 16px
+   the RJ mark sat almost against the screen edge, which reads as clipped
+   rather than as a margin. Higher specificity than the .container rules above
+   on purpose, so this wins at every phone width. */
+@media (max-width: 768px) {
+  .nav .container {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+}
+
 /* Navigation */
 .nav {
   position: fixed;
@@ -2175,18 +2186,6 @@ html, body {
   font-size: 0.6875rem;
   color: var(--text-muted);
   overflow-wrap: anywhere;
-}
-
-/* Provenance line above the wall. */
-.wall-note {
-  margin: 0 0 22px;
-  max-width: 62ch;
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
-}
-@media (max-width: 768px) {
-  .wall-note { font-size: 0.875rem; margin-bottom: 18px; }
 }
 
 /* Jump rail */
