@@ -2256,7 +2256,7 @@ html, body {
 .ribbon__track {
   display: flex;
   width: max-content;
-  animation: ribbonRun 46s linear infinite;
+  animation: ribbonRun 60s linear infinite;
 }
 .ribbon:hover .ribbon__track { animation-play-state: paused; }
 /* margin-right, NOT gap on the track. `gap` puts 23 gaps between 24 items, so
@@ -2270,9 +2270,11 @@ html, body {
   color: var(--text-muted);
 }
 .ribbon__item .wall__icon { width: 22px; height: 22px; opacity: 0.45; }
+/* -25% = exactly one of the four copies. Must stay in step with
+   RIBBON_COPIES in Skills.jsx: travel = 100 / copies. */
 @keyframes ribbonRun {
   from { transform: none; }
-  to   { transform: translateX(-50%); }
+  to   { transform: translateX(-25%); }
 }
 
 @media (max-width: 768px) {

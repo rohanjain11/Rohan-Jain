@@ -49,14 +49,37 @@ function SkillBand({ title, items }) {
 }
 
 /* Decorative only. Pulled from SKILLS by index so the ribbon can never drift
-   into carrying a skill that is not also in the wall below. */
+   into carrying a skill that is not also in the wall below. Long enough that
+   one copy fills a wide screen; see RIBBON_COPIES for why that matters. */
 const RIBBON = [
-  SKILLS['LLM and Agents'][0], SKILLS['LLM and Agents'][2], SKILLS['Languages'][0],
-  SKILLS['Backend and Data'][0], SKILLS['Machine Learning'][9], SKILLS['Backend and Data'][10],
-  SKILLS['Backend and Data'][11], SKILLS['Frontend, Cloud and Observability'][0],
-  SKILLS['Machine Learning'][7], SKILLS['Backend and Data'][7], SKILLS['LLM and Agents'][8],
-  SKILLS['Frontend, Cloud and Observability'][7],
+  SKILLS['LLM and Agents'][0],                      // LangGraph
+  SKILLS['LLM and Agents'][1],                      // LangChain
+  SKILLS['Languages'][0],                           // Python
+  SKILLS['Machine Learning'][9],                    // PyTorch
+  SKILLS['Backend and Data'][10],                   // Docker
+  SKILLS['Backend and Data'][11],                   // Kubernetes
+  SKILLS['Frontend, Cloud and Observability'][0],   // React
+  SKILLS['Backend and Data'][7],                    // Databricks
+  SKILLS['LLM and Agents'][8],                      // Ollama
+  SKILLS['Frontend, Cloud and Observability'][7],   // Grafana
+  SKILLS['Machine Learning'][7],                    // TensorFlow
+  SKILLS['Backend and Data'][0],                    // FastAPI
+  SKILLS['Backend and Data'][3],                    // PostgreSQL
+  SKILLS['Backend and Data'][6],                    // MongoDB
+  SKILLS['Backend and Data'][9],                    // Temporal
+  SKILLS['Backend and Data'][13],                   // ArgoCD
+  SKILLS['Machine Learning'][12],                   // MLflow
+  SKILLS['Machine Learning'][0],                    // scikit-learn
 ]
+
+/* Four copies, and the keyframe travels exactly one of them (-25%). A marquee
+   only looks continuous while content still covers the viewport at every
+   moment of the cycle. With two copies and a -50% travel, the screen is only
+   covered while the viewport is narrower than ONE copy: past that you watch it
+   empty out and snap, which is exactly the reset after Grafana. Four copies
+   leave three copies' worth of content standing at the end of the travel, so
+   the loop stays covered on an ultrawide monitor. */
+const RIBBON_COPIES = 4
 
 export default function Skills() {
   const skillKeys = Object.keys(SKILLS)
@@ -106,7 +129,7 @@ export default function Skills() {
                   put the first two Ctrl+F hits for Kubernetes, Python, React
                   and Databricks inside a clipped track the reader cannot see.
                   Marks carry no searchable text, so the problem disappears. */}
-              {[0, 1].map((copy) =>
+              {Array.from({ length: RIBBON_COPIES }, (_, copy) =>
                 RIBBON.map((raw) => (
                   <span className="ribbon__item" key={`${copy}-${raw}`}>
                     <SkillIcon name={raw} />
