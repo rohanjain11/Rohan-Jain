@@ -68,7 +68,7 @@ export default function Home() {
           <div style={{ marginBottom: '80px' }}>
             <h1 className="hero__title">Rohan Jain</h1>
             <p className="hero__subtitle">
-              I build LLM systems that hold up in production, not just in demos: agents, MCP tool servers, retrieval, and the evaluation harnesses and guardrails that make them trustworthy.
+              I build LLM systems that hold up in production: agents, MCP tool servers, retrieval, and the evaluation harnesses and guardrails that make them trustworthy.
             </p>
           </div>
 

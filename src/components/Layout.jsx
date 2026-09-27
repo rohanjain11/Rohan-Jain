@@ -34,6 +34,9 @@ export default function Layout({ children }) {
     }
 
     const handleMouseLeave = (e) => {
+      /* Capture-phase mouseleave also fires on the document itself when the
+         pointer leaves the window, and the document has no closest(). */
+      if (!(e.target instanceof Element)) return
       const card = e.target.closest('.card, .hero__nav-card, .experience-card')
       if (!card) return
 

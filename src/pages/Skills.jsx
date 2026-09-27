@@ -165,10 +165,10 @@ export default function Skills() {
             <div className="card reveal" ref={reveal1}>
               <h3 className="card__title">Measure Before I Believe</h3>
               <p className="card__body">
-                I built a 115-question evaluation harness for an on-prem LLM agent and then let it
-                overrule me. It took tool recall from 0.47 to 0.97, and it scored my own recommended
-                gate design at 0.03. I shipped the alternative in about 80 lines and stamped the
-                correction on the original document so nobody built the dead version.
+                I built a 115-question evaluation harness for an on-prem LLM agent and let it choose
+                the design. It measured a plan that lifts tool recall from 0.47 to 0.97 and ruled out
+                a gate design that scored 0.03 before anyone built it. The index the plan needs is
+                about 80 lines with zero new dependencies.
               </p>
             </div>
 
@@ -176,9 +176,10 @@ export default function Skills() {
               <h3 className="card__title">Fail Closed by Default</h3>
               <p className="card__body">
                 The MCP server I designed is read-only by construction, with a mandatory time-window
-                bound on every scanning query. I proved the containment instead of asserting it: an
-                adversarial prompt-injection test instructed the agent to delete production data and
-                confirmed it could not.
+                bound on every scanning query. Across the agent's tools I proved containment instead
+                of asserting it: an adversarial prompt-injection test instructed the agent to delete
+                production data and confirmed it could not, with query-only database tools and a
+                read-only login.
               </p>
             </div>
 
