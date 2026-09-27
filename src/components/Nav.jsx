@@ -73,9 +73,15 @@ export default function Nav() {
       <nav className={`nav ${scrolled ? 'scrolled' : ''}`} aria-label="Primary">
       <div className="container nav__inner">
         <Link className="brand" to="/" onClick={() => setMobileMenuOpen(false)}>
-          <span className="brand__mark">
-            <span className="brand__mark-text">RJ</span>
-          </span>
+          {/* alt is empty: the name sits right beside it, so a screen reader
+              would otherwise read "Rohan Jain" twice. */}
+          <img
+            className="brand__mark brand__mark--photo"
+            src={`${import.meta.env.BASE_URL}assets/img/avatar.jpg`.replace(/\/+/g, '/')}
+            alt=""
+            width="32"
+            height="32"
+          />
           <span>{SITE.name}</span>
         </Link>
 
