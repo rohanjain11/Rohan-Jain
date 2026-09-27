@@ -102,7 +102,7 @@ Quick deploy:
 npm run deploy
 ```
 
-The site will be live at: **https://rohanjain11.github.io/Rohan-Jain/**
+The site will be live at: **https://rohanjain.me/**
 
 ## 📝 Customization
 

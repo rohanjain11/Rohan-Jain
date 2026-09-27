@@ -30,7 +30,7 @@ npm run deploy
 This will:
 1. Build your project (`npm run build`)
 2. Deploy the `dist` folder to the `gh-pages` branch
-3. Make your site available at: `https://rohanjain11.github.io/Rohan-Jain/`
+3. Make your site available at: `https://rohanjain.me/`
 
 ## Step 6: Enable GitHub Pages (if needed)
 1. Go to your repository on GitHub: https://github.com/rohanjain11/Rohan-Jain
@@ -48,4 +48,4 @@ git push
 npm run deploy
 ```
 
-Your site will be live at: **https://rohanjain11.github.io/Rohan-Jain/**
+Your site will be live at: **https://rohanjain.me/**
