@@ -75,7 +75,7 @@ const ICON_FOR = {
   'SQLite / sqlite-vec': 'b:sqlite',
   'PostGIS': 'g:map',
   'MongoDB': 'b:mongodb',
-  'Databricks (Unity Catalog, Unity AI Gateway, Model Serving, Genie, AI Functions)': 'b:databricks',
+  'Databricks (SQL, Asset Bundles, AI/BI dashboards, Unity Catalog, Unity AI Gateway, Model Serving, Genie, AI Functions)': 'b:databricks',
   'Iceberg / Parquet CDC via Debezium': 'b:apacheparquet',
   'Temporal': 'b:temporal',
   'Docker': 'b:docker',
