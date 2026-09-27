@@ -450,7 +450,13 @@ a {
   background: var(--accent);
 }
 
+/* Restate the fill. .btn:hover swaps the background to var(--bg-card), and at
+   equal specificity it beat the plain .btn--primary rule, so in dark mode the
+   hovered Resume button went near-black with black text and the label vanished.
+   Light mode escaped only because its [data-theme] rule comes later. */
 .btn--primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
   transform: perspective(500px) translateZ(15px);
   box-shadow: var(--shadow-glow), 0 0 30px rgba(255, 255, 255, 0.2);
 }
